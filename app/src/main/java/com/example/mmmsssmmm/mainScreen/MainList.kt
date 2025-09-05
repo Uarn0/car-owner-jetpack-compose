@@ -1,33 +1,27 @@
 package com.example.mmmsssmmm.mainScreen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.mmmsssmmm.data.VehiclesEntity
+import com.example.mmmsssmmm.domain.vehicleModel.IVehicle
 
 @Composable
 fun MainList(
-    vehicles: List<VehiclesEntity>,
-    onDetailsClick: (VehiclesEntity) -> Unit,
+    vehicles: List<IVehicle>,
+    onDetailsClick: (Long) -> Unit,
     onAddClick: () -> Unit,
-    onDelete: (VehiclesEntity) -> Unit,
+    onDelete: (Long) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -46,14 +40,14 @@ fun MainList(
                     painter = painterResource(id = vehicle.image),
                     contentDescription = stringType
                 )
-                Text("${vehicle.name}\n${stringType}", modifier = Modifier.padding(8.dp))
+                Text("${vehicle.name}\n$stringType", modifier = Modifier.padding(8.dp))
 
-                Button(onClick = { onDelete(vehicle) }) {
+                Button(onClick = { onDelete(vehicle.id) }) {
                     Icon(Icons.Default.Delete, contentDescription = "Remove")
                     Spacer(Modifier.width(8.dp))
                     Text("Remove")
                 }
-                Button(onClick = { onDetailsClick(vehicle) }) {
+                Button(onClick = { onDetailsClick(vehicle.id) }) {
                     Icon(Icons.Default.Edit, contentDescription = "Details")
                     Spacer(Modifier.width(8.dp))
                     Text("Details")

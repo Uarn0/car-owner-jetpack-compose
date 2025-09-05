@@ -16,4 +16,7 @@ interface VehiclesDAO {
 
     @Delete
     suspend fun delete(vehicles: VehiclesEntity)
+
+    @Query("DELETE FROM vehicles WHERE id = :id")
+    suspend fun deleteById(id: Long)
 }
