@@ -1,6 +1,8 @@
 package com.example.mmmsssmmm.data
 
 import android.content.Context
+import com.example.mmmsssmmm.data.repos.EventRepository
+import com.example.mmmsssmmm.data.repos.VehicleRepository
 
 object Graph{
     @Volatile private var initialized = false

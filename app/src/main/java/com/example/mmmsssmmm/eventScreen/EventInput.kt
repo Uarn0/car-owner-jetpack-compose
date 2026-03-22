@@ -77,7 +77,6 @@ fun whatType(event: String): Int {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun whatTime(): String {
     return OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 }

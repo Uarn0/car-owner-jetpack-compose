@@ -1,0 +1,280 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "0bd8d9af0f1eeb6b25f205a427cc4754",
+    "entities": [
+      {
+        "tableName": "vehicles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `brandId` INTEGER NOT NULL, `model` TEXT NOT NULL, `type` INTEGER NOT NULL, `manufactureYear` INTEGER NOT NULL, `tankCapacity` REAL NOT NULL, `plateNumber` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "brandId",
+            "columnName": "brandId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manufactureYear",
+            "columnName": "manufactureYear",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tankCapacity",
+            "columnName": "tankCapacity",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "plateNumber",
+            "columnName": "plateNumber",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`globalEventId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `vehicleId` INTEGER NOT NULL, `name` TEXT NOT NULL, `eventType` INTEGER NOT NULL, `date` TEXT NOT NULL, FOREIGN KEY(`vehicleId`) REFERENCES `vehicles`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "globalEventId",
+            "columnName": "globalEventId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vehicleId",
+            "columnName": "vehicleId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eventType",
+            "columnName": "eventType",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "globalEventId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_events_vehicleId",
+            "unique": false,
+            "columnNames": [
+              "vehicleId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_events_vehicleId` ON `${TABLE_NAME}` (`vehicleId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "vehicles",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "vehicleId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "service",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `workTitle` TEXT NOT NULL, `serviceStation` TEXT NOT NULL, FOREIGN KEY(`id`) REFERENCES `events`(`globalEventId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "workTitle",
+            "columnName": "workTitle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serviceStation",
+            "columnName": "serviceStation",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "events",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "id"
+            ],
+            "referencedColumns": [
+              "globalEventId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "trip",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `startPoint` TEXT NOT NULL, `endPoint` TEXT NOT NULL, `distanceKM` INTEGER NOT NULL, `isBusiness` INTEGER NOT NULL, FOREIGN KEY(`id`) REFERENCES `events`(`globalEventId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startPoint",
+            "columnName": "startPoint",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endPoint",
+            "columnName": "endPoint",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distanceKM",
+            "columnName": "distanceKM",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isBusiness",
+            "columnName": "isBusiness",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "events",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "id"
+            ],
+            "referencedColumns": [
+              "globalEventId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "fueling",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fuelTypeId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `volumeLiters` REAL NOT NULL, `pricePerLiter` REAL NOT NULL, `isFullTank` INTEGER NOT NULL, FOREIGN KEY(`fuelTypeId`) REFERENCES `events`(`globalEventId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "fuelTypeId",
+            "columnName": "fuelTypeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "volumeLiters",
+            "columnName": "volumeLiters",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pricePerLiter",
+            "columnName": "pricePerLiter",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isFullTank",
+            "columnName": "isFullTank",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "fuelTypeId"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "events",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fuelTypeId"
+            ],
+            "referencedColumns": [
+              "globalEventId"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0bd8d9af0f1eeb6b25f205a427cc4754')"
+    ]
+  }
+}

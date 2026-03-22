@@ -68,7 +68,7 @@ fun Main() {
 
             MainInput(
                 onSave = { name, type, image ->
-                    vm.add(name, type, image)
+                    vm.add(1, "X5", 2008, 30.2, "CA2930CI", 2)
                     navController.popBackStack()
                 }
             )

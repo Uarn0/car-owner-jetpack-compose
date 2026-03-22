@@ -1,0 +1,133 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "6858f067acecc4c5745f479a07afc628",
+    "entities": [
+      {
+        "tableName": "vehicles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `brandId` INTEGER NOT NULL, `model` TEXT NOT NULL, `type` INTEGER NOT NULL, `manufactureYear` INTEGER NOT NULL, `tankCapacity` REAL NOT NULL, `plateNumber` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "brandId",
+            "columnName": "brandId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "model",
+            "columnName": "model",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manufactureYear",
+            "columnName": "manufactureYear",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tankCapacity",
+            "columnName": "tankCapacity",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "plateNumber",
+            "columnName": "plateNumber",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`globalEventId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `vehicleId` INTEGER NOT NULL, `name` TEXT NOT NULL, `eventType` INTEGER NOT NULL, `date` TEXT NOT NULL, FOREIGN KEY(`vehicleId`) REFERENCES `vehicles`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "globalEventId",
+            "columnName": "globalEventId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vehicleId",
+            "columnName": "vehicleId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eventType",
+            "columnName": "eventType",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "globalEventId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_events_vehicleId",
+            "unique": false,
+            "columnNames": [
+              "vehicleId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_events_vehicleId` ON `${TABLE_NAME}` (`vehicleId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "vehicles",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "vehicleId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6858f067acecc4c5745f479a07afc628')"
+    ]
+  }
+}

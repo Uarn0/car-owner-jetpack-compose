@@ -27,7 +27,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MainInput(onSave: (name: String, type: Int, image: Int) -> Unit) {
+fun MainInput(
+    onSave: (name: String, type: Int, image: Int) -> Unit
+) {
     var vehicleName by remember { mutableStateOf("") }
     val types = listOf("Car", "Motorcycle", "Minibus")
     var selectedType by remember { mutableStateOf(types[0]) }

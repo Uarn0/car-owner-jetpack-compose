@@ -40,7 +40,7 @@ fun MainList(
                     painter = painterResource(id = vehicle.image),
                     contentDescription = stringType
                 )
-                Text("${vehicle.name}\n$stringType", modifier = Modifier.padding(8.dp))
+                Text("${vehicle.model}\n$stringType", modifier = Modifier.padding(8.dp))
 
                 Button(onClick = { onDelete(vehicle.id) }) {
                     Icon(Icons.Default.Delete, contentDescription = "Remove")
