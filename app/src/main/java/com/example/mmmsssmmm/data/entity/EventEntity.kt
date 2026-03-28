@@ -21,4 +21,6 @@ data class  EventEntity(
     val name: String,
     val eventType: Int,
     val date: String,
+    val odometer: Int,
+    val totalCost: Double
 )

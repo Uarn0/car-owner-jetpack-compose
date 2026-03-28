@@ -10,10 +10,13 @@ import com.example.mmmsssmmm.data.dao.ServiceDAO
 import com.example.mmmsssmmm.data.dao.TripDAO
 import com.example.mmmsssmmm.data.dao.VehiclesDAO
 import com.example.mmmsssmmm.data.entity.EventEntity
+import com.example.mmmsssmmm.data.entity.FuelingEntity
+import com.example.mmmsssmmm.data.entity.ServiceEntity
+import com.example.mmmsssmmm.data.entity.TripEntity
 import com.example.mmmsssmmm.data.entity.VehiclesEntity
 
 @Database(
-    entities = [VehiclesEntity::class, EventEntity::class],
+    entities = [VehiclesEntity::class, EventEntity::class, ServiceEntity::class, TripEntity::class, FuelingEntity::class ],
     version = 2,
     exportSchema = true
 )

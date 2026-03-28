@@ -93,7 +93,7 @@ fun Main() {
                     val id = backStackEntry.arguments?.getLong("vehicleId")!!
                     navController.navigate("AddEvent/$id")
                 },
-                onDeleteClick = vm::delete
+                onDeleteClick = vm::allDelete
             )
         }
 

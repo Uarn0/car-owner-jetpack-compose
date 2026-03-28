@@ -19,7 +19,7 @@ import com.example.mmmsssmmm.domain.eventModel.TripEvent
 import com.example.mmmsssmmm.domain.eventModel.ServiceEvent
 
 @Composable
-fun EventList(
+fun  EventList(
     events: List<IEvent>,
     onAddClick: () -> Unit,
     onDeleteClick: (Long) -> Unit

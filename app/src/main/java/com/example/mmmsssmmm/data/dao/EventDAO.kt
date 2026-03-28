@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EventDAO {
-    @Query("SELECT * FROM events WHERE vehicleId = :vehicleId ORDER BY globalEventId DESC ")
+    @Query("SELECT * FROM events WHERE vehicleId = :vehicleId" +
+            " ORDER BY globalEventId DESC ")
     fun observeEvents(vehicleId: Long): Flow<List<EventEntity>>
 
     @Insert

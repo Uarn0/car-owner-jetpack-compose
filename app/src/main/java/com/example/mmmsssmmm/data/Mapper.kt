@@ -1,9 +1,11 @@
 package com.example.mmmsssmmm.data
 
-import com.example.mmmsssmmm.data.entity.EventEntity
 import com.example.mmmsssmmm.data.entity.VehiclesEntity
+import com.example.mmmsssmmm.data.relationship.EventAndFueling
+import com.example.mmmsssmmm.data.relationship.EventAndService
+import com.example.mmmsssmmm.data.relationship.EventAndTrip
 import com.example.mmmsssmmm.domain.vehicleModel.*
-import com.example.mmmsssmmm.domain.eventModel.*
+import com.example.mmmsssmmm.domain.item.VehicleHistoryItem
 
 fun VehiclesEntity.toDomain(): IVehicle = when (type) {
     0 -> Car(
@@ -29,31 +31,38 @@ fun VehiclesEntity.toDomain(): IVehicle = when (type) {
     )
 }
 
-fun EventEntity.toDomain(): IEvent {
-    val event = when (eventType) {
-        0 -> RepairEvent(
-            id = globalEventId,
-            vehicleId = vehicleId,
-            name = name,
-            type = eventType,
-            timeWhenAdded = date
-        )
+fun EventAndTrip.toDomain(): VehicleHistoryItem.Trip {
+    return VehicleHistoryItem.Trip(
+        eventId = this.event.globalEventId,
+        date = this.event.date,
+        odometer = this.event.odometer,
+        totalCost = this.event.totalCost,
+        startPoint = this.trip!!.startPoint,
+        endPoint = this.trip.endPoint,
+        distanceKM = this.trip.distanceKM,
+        isBusiness = this.trip.isBusiness
+    )
+}
 
-        1 -> TripEvent(
-            id = globalEventId,
-            vehicleId = vehicleId,
-            name = name,
-            type = eventType,
-            timeWhenAdded = date
-        )
+fun EventAndFueling.toDomain(): VehicleHistoryItem.Fueling{
+    return VehicleHistoryItem.Fueling(
+        eventId = this.event.globalEventId,
+        date = this.event.date,
+        odometer = this.event.odometer,
+        totalCost = this.event.totalCost,
+        volumeLiters = this.fueling!!.volumeLiters,
+        pricePerLiter = this.fueling.pricePerLiter,
+        isFullTank = this.fueling.isFullTank
+    )
+}
 
-        else -> ServiceEvent(
-            id = globalEventId,
-            vehicleId = vehicleId,
-            name = name,
-            type = eventType,
-            timeWhenAdded = date
-        )
-    }
-    return event
+fun EventAndService.toDomain(): VehicleHistoryItem.Service{
+    return VehicleHistoryItem.Service(
+        eventId = this.event.globalEventId,
+        date = this.event.date,
+        odometer = this.event.odometer,
+        totalCost = this.event.totalCost,
+        workTitle = this.service!!.workTitle,
+        serviceStation = this.service.serviceStation
+    )
 }

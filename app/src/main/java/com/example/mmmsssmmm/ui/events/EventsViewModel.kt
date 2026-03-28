@@ -15,6 +15,7 @@ class EventsViewModel(
 
     private val vehicleId: Long = checkNotNull(savedStateHandle["vehicleId"])
     private val globalEventId: Long = checkNotNull(savedStateHandle["globalEventId"])
+
     val events = repo.observeEvents(vehicleId)
         .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
 
