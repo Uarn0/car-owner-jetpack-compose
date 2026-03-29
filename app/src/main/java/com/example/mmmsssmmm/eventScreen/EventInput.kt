@@ -29,7 +29,12 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EventInput(onSave: (name: String, type: Int, date: String) -> Unit) {
+fun EventInput(
+    onSaveTrip: (String, String, Int, Double, String, String, Int, Boolean) -> Unit,
+    onSaveFuel: (String, String, Int, Double, Int, Double, Double, Boolean) -> Unit,
+    onSaveService: (String, String, Int, Double, String, String) -> Unit,
+    onCancel: () -> Unit
+) {
     val options = listOf("Repair", "Trip", "Service")
     var selected by remember { mutableStateOf(options.first()) }
     Column {

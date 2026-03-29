@@ -108,10 +108,40 @@ fun Main() {
                 viewModelStoreOwner = backStackEntry
             )
 
-            EventInput(onSave = { name, type, date ->
-                vm.add(name, type, date)
-                navController.popBackStack()
-            })
+            EventInput(
+                onSaveTrip = { name, date, odometer, cost, start, end, dist, isBus ->
+
+                    vm.addTrip(
+                        name = name,
+                        date = date,
+                        odometer = odometer,
+                        totalCost = cost,
+                        startPoint = start,
+                        endPoint = end,
+                        distanceKM = dist,
+                        isBusiness = isBus
+                    )
+                    navController.popBackStack()
+
+                },
+                onSaveFuel = { name, date, odometer, cost, fuelId, vol, price, isFull ->
+
+                    vm.addFueling(name, date, odometer, cost, fuelId, vol, price, isFull)
+                    navController.popBackStack()
+
+                },
+                onSaveService = {name, date, odometer, cost, title, station  ->
+                    vm.addService(
+                        name = name,
+                        date = date,
+                        odometer = odometer,
+                        totalCost = cost,
+                        workTitle = title,
+                        serviceStation = station
+                    )
+                },
+                onCancel = { navController.popBackStack() }
+            )
         }
     }
 }

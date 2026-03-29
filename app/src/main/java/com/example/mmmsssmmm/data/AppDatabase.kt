@@ -9,6 +9,11 @@ import com.example.mmmsssmmm.data.dao.FuelDAO
 import com.example.mmmsssmmm.data.dao.ServiceDAO
 import com.example.mmmsssmmm.data.dao.TripDAO
 import com.example.mmmsssmmm.data.dao.VehiclesDAO
+import com.example.mmmsssmmm.data.dictionary.BrandDictEntity
+import com.example.mmmsssmmm.data.dictionary.BrandTypeDictEntity
+import com.example.mmmsssmmm.data.dictionary.DictionaryDao
+import com.example.mmmsssmmm.data.dictionary.FuelDictEntity
+import com.example.mmmsssmmm.data.dictionary.ModelDictEntity
 import com.example.mmmsssmmm.data.entity.EventEntity
 import com.example.mmmsssmmm.data.entity.FuelingEntity
 import com.example.mmmsssmmm.data.entity.ServiceEntity
@@ -16,7 +21,16 @@ import com.example.mmmsssmmm.data.entity.TripEntity
 import com.example.mmmsssmmm.data.entity.VehiclesEntity
 
 @Database(
-    entities = [VehiclesEntity::class, EventEntity::class, ServiceEntity::class, TripEntity::class, FuelingEntity::class ],
+    entities = [
+        VehiclesEntity::class,
+        EventEntity::class,
+        ServiceEntity::class,
+        TripEntity::class,
+        FuelingEntity::class,
+        BrandDictEntity::class,
+        BrandTypeDictEntity::class,
+        FuelDictEntity::class,
+        ModelDictEntity::class],
     version = 2,
     exportSchema = true
 )
@@ -27,6 +41,8 @@ abstract class AppDatabase: RoomDatabase() {
     abstract fun tripDao(): TripDAO
     abstract fun fuelDao(): FuelDAO
     abstract fun serviceDao(): ServiceDAO
+    abstract fun dictionaryDao(): DictionaryDao
+
 
 
     companion object{

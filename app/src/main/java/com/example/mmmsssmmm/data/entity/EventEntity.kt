@@ -19,7 +19,6 @@ data class  EventEntity(
     @PrimaryKey(autoGenerate = true) val globalEventId: Long = 0,
     val vehicleId: Long,
     val name: String,
-    val eventType: Int,
     val date: String,
     val odometer: Int,
     val totalCost: Double

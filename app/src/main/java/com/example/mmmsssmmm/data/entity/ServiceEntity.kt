@@ -16,8 +16,7 @@ import androidx.room.PrimaryKey
         )
     ], indices = [Index("eventId")])
 data class ServiceEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val eventId: Long,
+    @PrimaryKey val eventId: Long,
     val workTitle: String,
     val serviceStation: String,
 )

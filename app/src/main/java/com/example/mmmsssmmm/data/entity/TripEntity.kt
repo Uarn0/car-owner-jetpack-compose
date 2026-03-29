@@ -15,8 +15,7 @@ import androidx.room.PrimaryKey
         )
     ])
 data class TripEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val eventId: Long,
+    @PrimaryKey val eventId: Long,
     val startPoint: String,
     val endPoint: String,
     val distanceKM: Int,
