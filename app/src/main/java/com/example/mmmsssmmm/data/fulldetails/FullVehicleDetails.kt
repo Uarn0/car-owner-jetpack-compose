@@ -9,13 +9,8 @@ import com.example.mmmsssmmm.data.entity.VehiclesEntity
 
 data class FullVehicleDetails(
     @Embedded val vehicle: VehiclesEntity,
-
-    @Relation(parentColumn = "brandId", entityColumn = "id")
-    val brand: BrandDictEntity,
-
-    @Relation(parentColumn = "modelId", entityColumn = "id")
-    val model: ModelDictEntity,
-
-    @Relation(parentColumn = "typeId", entityColumn = "id")
-    val type: BrandTypeDictEntity
+    val brandName: String,
+    val modelName: String,
+    val typeName: String,
+    val imageResName: String
 )

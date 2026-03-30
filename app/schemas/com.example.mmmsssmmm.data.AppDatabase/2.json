@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "30613cd59167d7bda536054ddbc7c12d",
+    "identityHash": "d86905e3911a8c5229f70d2004451097",
     "entities": [
       {
         "tableName": "vehicles",
@@ -343,7 +343,7 @@
       },
       {
         "tableName": "body_types",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `typeName` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -352,8 +352,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "type",
-            "columnName": "type",
+            "fieldPath": "typeName",
+            "columnName": "typeName",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -490,7 +490,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '30613cd59167d7bda536054ddbc7c12d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd86905e3911a8c5229f70d2004451097')"
     ]
   }
 }

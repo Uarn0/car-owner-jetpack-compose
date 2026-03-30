@@ -16,9 +16,9 @@ import com.example.mmmsssmmm.data.dictionary.ModelDictEntity
             parentColumns = ["id"],
             childColumns = ["modelId"]
         )
-    ], indices = [Index("modelId")]
+    ],
+    indices = [Index("modelId")]
 )
-
 data class VehiclesEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val modelId: Long,

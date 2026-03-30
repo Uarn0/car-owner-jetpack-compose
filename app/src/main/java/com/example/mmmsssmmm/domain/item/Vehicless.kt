@@ -1,4 +1,4 @@
-package com.example.mmmsssmmm.data
+package com.example.mmmsssmmm.domain.item
 
 sealed class Vehicless {
     abstract val id: Long

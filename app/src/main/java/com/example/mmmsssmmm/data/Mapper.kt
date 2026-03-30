@@ -5,6 +5,7 @@ import com.example.mmmsssmmm.data.fulldetails.FullEventDetails
 import com.example.mmmsssmmm.data.fulldetails.FullVehicleDetails
 import com.example.mmmsssmmm.domain.vehicleModel.*
 import com.example.mmmsssmmm.domain.item.VehicleHistoryItem
+import com.example.mmmsssmmm.domain.item.Vehicless
 
 fun FullVehicleDetails.toDomain(): Vehicless {
     val v = this.vehicle
@@ -14,7 +15,6 @@ fun FullVehicleDetails.toDomain(): Vehicless {
     val imageName = this.model.imageResName
 
     return when (this.model.bodyTypeId) {
-        // Припускаємо, що в JSON: 1 - Седан, 2 - Кросовер, 3 - Хетчбек і т.д.
         1, 2, 3, 5 -> Vehicless.Car(
             id = v.id,
             brand = brandName,

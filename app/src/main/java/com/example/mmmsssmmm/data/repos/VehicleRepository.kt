@@ -3,22 +3,26 @@ package com.example.mmmsssmmm.data.repos
 import com.example.mmmsssmmm.data.AppDatabase
 import com.example.mmmsssmmm.data.entity.VehiclesEntity
 import com.example.mmmsssmmm.data.toDomain
+import com.example.mmmsssmmm.domain.item.Vehicless
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class VehicleRepository(private val db: AppDatabase){
-    fun observerVehicle() = db.vehicleDao()
-        .observeVehicles()
-        .map { it.map { e -> e.toDomain() } }
+    fun observerVehicle(): Flow<List<Vehicless>> {
+        return db.vehicleDao()
+            .observeAllVehiclesFull()
+            .map { list ->
+                list.map { fullVehicless -> fullVehicless.toDomain() }
+            }
+    }
 
-    suspend fun insert(brandId: Int, model: String, manufactureYear: Int, tankCapacity: Double, plateNumber: String, typeOfVehicle: Int){
+    suspend fun insert(modelId: Long, manufactureYear: Int, tankCapacity: Double, plateNumber: String){
         db.vehicleDao().insert(
             VehiclesEntity(
-                brandId = brandId,
-                model = model,
-                type = typeOfVehicle,
+                modelId = modelId,
                 manufactureYear = manufactureYear,
                 tankCapacity = tankCapacity,
-                plateNumber = plateNumber
+                plateNumber = plateNumber,
             )
         )
     }

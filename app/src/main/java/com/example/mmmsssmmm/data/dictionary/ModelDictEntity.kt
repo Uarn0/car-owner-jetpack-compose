@@ -25,7 +25,7 @@ import androidx.room.PrimaryKey
 
 data class ModelDictEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val brandId: Int,
+    val brandId: Long,
     val bodyTypeId: Int,
     val name: String,
     val yearStart: Int,
