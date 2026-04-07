@@ -35,7 +35,7 @@ fun MainInput(
 
     var brandExpanded by remember { mutableStateOf(false) }
     var modelExpanded by remember { mutableStateOf(false) }
-    var yearExpanded by remember { mutableStateOf(false) } // <-- Додали стан для років
+    var yearExpanded by remember { mutableStateOf(false) }
 
     var year by remember { mutableStateOf("") }
     var tankCapacity by remember { mutableStateOf("") }
@@ -81,9 +81,7 @@ fun MainInput(
             }
         }
 
-        // ==========================================
-        // БРЕНДИ
-        // ==========================================
+
         ExposedDropdownMenuBox(
             expanded = brandExpanded,
             onExpandedChange = { brandExpanded = it }
@@ -110,7 +108,7 @@ fun MainInput(
                             onClick = {
                                 selectedBrand = brand
                                 selectedModel = null
-                                year = "" // <-- Скидаємо рік, якщо змінили бренд
+                                year = ""
                                 brandExpanded = false
                                 onBrandSelected(brand.id)
                             }
@@ -120,9 +118,7 @@ fun MainInput(
             }
         }
 
-        // ==========================================
-        // МОДЕЛІ
-        // ==========================================
+
         if (selectedBrand != null) {
             ExposedDropdownMenuBox(
                 expanded = modelExpanded,
@@ -149,7 +145,7 @@ fun MainInput(
                                 text = { Text(model.name) },
                                 onClick = {
                                     selectedModel = model
-                                    year = "" // <-- Скидаємо рік, якщо змінили модель
+                                    year = ""
                                     modelExpanded = false
                                 }
                             )
@@ -159,9 +155,7 @@ fun MainInput(
             }
         }
 
-        // ==========================================
-        // ВИПАДАЮЧИЙ СПИСОК РОКІВ
-        // ==========================================
+
         if (selectedModel != null) {
             ExposedDropdownMenuBox(
                 expanded = yearExpanded,
@@ -170,7 +164,7 @@ fun MainInput(
                 OutlinedTextField(
                     value = if (year.isNotEmpty()) year else "Оберіть рік випуску",
                     onValueChange = {},
-                    readOnly = true, // Тільки для кліку
+                    readOnly = true,
                     label = { Text("Рік випуску") },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -179,16 +173,13 @@ fun MainInput(
                     colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
                 )
 
-                // Логіка створення списку років
                 val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-                // Якщо yearEnd більше або дорівнює yearStart, використовуємо його, інакше (або якщо авто досі випускається) - беремо поточний рік
                 val endYear = if (selectedModel!!.yearEnd >= selectedModel!!.yearStart && selectedModel!!.yearEnd <= currentYear) {
                     selectedModel!!.yearEnd
                 } else {
                     currentYear
                 }
 
-                // Створюємо список від Start до End і розвертаємо, щоб найновіші були зверху
                 val availableYears = (selectedModel!!.yearStart..endYear).toList().reversed()
 
                 if (availableYears.isNotEmpty()) {
@@ -210,9 +201,6 @@ fun MainInput(
             }
         }
 
-        // ==========================================
-        // ІНШІ ПОЛЯ
-        // ==========================================
         OutlinedTextField(
             value = tankCapacity,
             onValueChange = { tankCapacity = it },
@@ -241,7 +229,7 @@ fun MainInput(
                 }
             },
             modifier = Modifier.fillMaxWidth().height(56.dp),
-            enabled = selectedModel != null && year.isNotBlank() // Кнопка активна тільки якщо вибрали рік
+            enabled = selectedModel != null && year.isNotBlank()
         ) {
             Icon(Icons.Default.Check, contentDescription = "Add")
             Spacer(Modifier.width(8.dp))

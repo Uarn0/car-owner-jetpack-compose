@@ -93,7 +93,6 @@ fun SubEventInput(
 
         Spacer(Modifier.height(24.dp))
 
-        // Підсумок вартості
         if (options[selectedTabIndex] != "Service") {
             Text(
                 text = "Розрахована вартість: ${vm.totalCost} ₴",
@@ -103,7 +102,6 @@ fun SubEventInput(
             Spacer(Modifier.height(16.dp))
         }
 
-        // Кнопки дій
         Row(Modifier.fillMaxWidth()) {
             OutlinedButton(
                 onClick = onDismiss,
@@ -121,7 +119,7 @@ fun SubEventInput(
                         "Fueling" -> vm.addFueling(fuelId = 1, isFull = true)
                         "Service" -> vm.addService()
                     }
-                    onDismiss() // Закриваємо форму після додавання
+                    onDismiss()
                 },
                 modifier = Modifier.weight(1f).height(56.dp)
             ) {

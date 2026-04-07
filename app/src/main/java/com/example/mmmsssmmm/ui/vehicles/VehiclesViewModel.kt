@@ -28,7 +28,7 @@ class VehiclesViewModel(private val repo: VehicleRepository) : ViewModel() {
     @OptIn(ExperimentalCoroutinesApi::class)
     val modelsForSelectedBrand = _selectedBrandId.flatMapLatest { brandId ->
         if (brandId != null) {
-            repo.observeModels(brandId) // Беремо з DictionaryDao
+            repo.observeModels(brandId)
         } else {
             flowOf(emptyList())
         }
