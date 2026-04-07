@@ -6,6 +6,12 @@ sealed class VehicleHistoryItem {
     abstract val odometer: Int
     abstract val totalCost: Double
 
+    data class Base(
+        override val eventId: Long,
+        override val date: String,
+        override val odometer: Int,
+        override val totalCost: Double
+    ) : VehicleHistoryItem()
     data class Trip(
         override val eventId: Long,
         override val date: String,

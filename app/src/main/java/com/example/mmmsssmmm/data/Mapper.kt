@@ -1,47 +1,7 @@
 package com.example.mmmsssmmm.data
 
-import com.example.mmmsssmmm.data.entity.VehiclesEntity
 import com.example.mmmsssmmm.data.fulldetails.FullEventDetails
-import com.example.mmmsssmmm.data.fulldetails.FullVehicleDetails
-import com.example.mmmsssmmm.domain.vehicleModel.*
 import com.example.mmmsssmmm.domain.item.VehicleHistoryItem
-import com.example.mmmsssmmm.domain.item.Vehicless
-
-fun FullVehicleDetails.toDomain(): Vehicless {
-    val v = this.vehicle
-    val brandName = this.brand.brandName
-    val modelName = this.model.name
-    val typeName = this.type.typeName
-    val imageName = this.model.imageResName
-
-    return when (this.model.bodyTypeId) {
-        1, 2, 3, 5 -> Vehicless.Car(
-            id = v.id,
-            brand = brandName,
-            model = modelName,
-            type = typeName,
-            image = imageName,
-            year = v.manufactureYear,
-            tankCapacity = v.tankCapacity
-        )
-        4 -> Vehicless.Minibus(
-            id = v.id,
-            brand = brandName,
-            model = modelName,
-            type = typeName,
-            image = imageName,
-            year = v.manufactureYear,
-        )
-        else -> Vehicless.Motorcycle(
-            id = v.id,
-            brand = brandName,
-            model = modelName,
-            type = typeName,
-            image = imageName,
-            year = v.manufactureYear
-        )
-    }
-}
 //
 //fun EventAndTrip.toDomain(): VehicleHistoryItem.Trip {
 //    return VehicleHistoryItem.Trip(
@@ -115,7 +75,12 @@ fun FullEventDetails.toDomain(): VehicleHistoryItem {
             )
         }
         else -> {
-            throw IllegalStateException("Event details are missing for event ID: ${this.event.globalEventId}")
+            VehicleHistoryItem.Base(
+                eventId = this.event.globalEventId,
+                date = this.event.date,
+                odometer = this.event.odometer,
+                totalCost = this.event.totalCost
+            )
         }
     }
 }

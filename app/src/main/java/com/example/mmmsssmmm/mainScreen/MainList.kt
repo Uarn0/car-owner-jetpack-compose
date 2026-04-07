@@ -7,70 +7,118 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.mmmsssmmm.domain.vehicleModel.IVehicle
+import coil.compose.AsyncImage
+import com.example.mmmsssmmm.data.fulldetails.FullVehicleDetails
 
 @Composable
 fun MainList(
-    vehicles: List<IVehicle>,
+    vehicles: List<FullVehicleDetails>,
     onDetailsClick: (Long) -> Unit,
     onAddClick: () -> Unit,
     onDelete: (Long) -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    val context = LocalContext.current
 
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddClick) {
+                Icon(Icons.Default.Add, contentDescription = "Add Vehicle")
+            }
+        }
+    ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 70.dp)
+                .padding(innerPadding),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(
                 items = vehicles,
-                key = { it.id }
-            ) { vehicle ->
-                val stringType = typeVehicleToString(vehicle.type)
+                key = { it.vehicle.globalVehicleId }
+            ) { details ->
 
-                Image(
-                    painter = painterResource(id = vehicle.image),
-                    contentDescription = stringType
-                )
-                Text("${vehicle.model}\n$stringType", modifier = Modifier.padding(8.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
 
-                Button(onClick = { onDelete(vehicle.id) }) {
-                    Icon(Icons.Default.Delete, contentDescription = "Remove")
-                    Spacer(Modifier.width(8.dp))
-                    Text("Remove")
-                }
-                Button(onClick = { onDetailsClick(vehicle.id) }) {
-                    Icon(Icons.Default.Edit, contentDescription = "Details")
-                    Spacer(Modifier.width(8.dp))
-                    Text("Details")
+                            if (details.vehicle.userImageUri != null) {
+                                AsyncImage(
+                                    model = details.vehicle.userImageUri,
+                                    contentDescription = "User car photo",
+                                    modifier = Modifier.size(100.dp)
+                                )
+                            } else {
+                                val imageResId = context.resources.getIdentifier(
+                                    details.imageResName, "drawable", context.packageName
+                                )
+
+                                if (imageResId != 0) {
+                                    Image(
+                                        painter = painterResource(id = imageResId),
+                                        contentDescription = "${details.brandName} ${details.modelName}",
+                                        modifier = Modifier.size(100.dp)
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Default.DirectionsCar,
+                                        contentDescription = "No Image",
+                                        modifier = Modifier.size(100.dp)
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            Column {
+                                Text(
+                                    text = "${details.brandName} ${details.modelName}",
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                                Text(
+                                    text = "${details.typeName} • ${details.vehicle.manufactureYear} рік",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Text(
+                                    text = "Держ. номер: ${details.vehicle.plateNumber}",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            OutlinedButton(onClick = { onDelete(details.vehicle.globalVehicleId) }) {
+                                Icon(Icons.Default.Delete, contentDescription = "Remove")
+                                Spacer(Modifier.width(4.dp))
+                                Text("Remove")
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Button(onClick = { onDetailsClick(details.vehicle.globalVehicleId) }) {
+                                Icon(Icons.Default.Edit, contentDescription = "Details")
+                                Spacer(Modifier.width(4.dp))
+                                Text("Details")
+                            }
+                        }
+                    }
                 }
             }
         }
-
-        Button(
-            onClick = onAddClick,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(60.dp)
-        ) {
-            Icon(Icons.Default.Add, contentDescription = "Add")
-            Spacer(Modifier.width(8.dp))
-            Text("Add")
-        }
     }
 }
-
-private fun typeVehicleToString(type: Int): String =
-    when (type) {
-        0 -> "Car"
-        1 -> "Minibus"
-        else -> "Motorcycle"
-    }

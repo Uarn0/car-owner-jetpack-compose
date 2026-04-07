@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.3.20"
 }
 
 android {
@@ -12,6 +13,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
+        //noinspection WrongGradleMethod
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
@@ -49,12 +51,14 @@ android {
 dependencies {
     implementation(platform(libs.androidx.compose.bom.v20260200))
 
+    implementation(libs.kotlinx.serialization.json)
+
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation.compose.v297)
-
+    implementation(libs.coil.compose)
     implementation(libs.androidx.activity.compose.v192)
 
     implementation(libs.androidx.lifecycle.runtime.ktx.v2100)

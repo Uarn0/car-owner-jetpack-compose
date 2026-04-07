@@ -11,125 +11,67 @@ import com.example.mmmsssmmm.domain.item.VehicleHistoryItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class EventRepository(private val db: AppDatabase){
+class EventRepository(private val db: AppDatabase) {
 
-    fun observeEvents(vehicleId: Long): Flow<List<VehicleHistoryItem>> {
-        return db.eventDao()
-            .observeFullEvents(vehicleId)
-            .map { list ->
-                list.map { fullEvent -> fullEvent.toDomain() }
-            }
+    fun observeBaseEvents(vehicleId: Long): Flow<List<EventEntity>> {
+        return db.eventDao().observeBaseEvents(vehicleId)
     }
 
+    suspend fun addToEventStats(eventId: Long, cost: Double, odometer: Int) {
+        db.eventDao().incrementEventStats(eventId, cost, odometer)
+    }
+
+    //    fun observeEvents(vehicleId: Long): Flow<List<VehicleHistoryItem>> {
+//        return db.eventDao()
+//            .observeFullEvents(vehicleId)
+//            .map { list -> list.map { fullEvent -> fullEvent.toDomain() } }
+//    }
+    fun observeSingleSubEvent(eventId: Long): Flow<VehicleHistoryItem?> {
+        return db.eventDao()
+            .observeSingleEvent(eventId)
+            .map { fullEvent -> fullEvent?.toDomain() }
+    }
     suspend fun insertBasicEvent(
-        vehicleId: Long,
-        name: String,
-        date: String,
-        odometer: Int,
-        totalCost: Double
-    ) {
-        db.eventDao().insert(
+        vehicleId: Long, name: String, date: String, odometer: Int, totalCost: Double
+    ): Long {
+        return db.eventDao().insert(
             EventEntity(
-                vehicleId = vehicleId,
-                name = name,
-                date = date,
-                odometer = odometer,
-                totalCost = totalCost
+                vehicleId = vehicleId, name = name, date = date,
+                odometer = odometer, totalCost = totalCost
             )
         )
     }
 
-    suspend fun insertTripEvent(
-        vehicleId: Long, name: String, time: String, odometer: Int, totalCost: Double,
-        startPoint: String, endPoint: String, distanceKM: Int, isBusiness: Boolean
+    suspend fun insertTripDetails(
+        eventId: Long, startPoint: String, endPoint: String, distanceKM: Int, isBusiness: Boolean
     ) {
-        db.withTransaction {
-            val newEventId = db.eventDao().insert(
-                EventEntity(
-                    vehicleId = vehicleId,
-                    name = name,
-                    date = time,
-                    odometer = odometer,
-                    totalCost = totalCost
-                )
+        db.tripDao().insert(
+            TripEntity(
+                eventId = eventId, startPoint = startPoint, endPoint = endPoint,
+                distanceKM = distanceKM, isBusiness = isBusiness
             )
-
-            db.tripDao().insert(
-                TripEntity(
-                    eventId = newEventId,
-                    startPoint = startPoint,
-                    endPoint = endPoint,
-                    distanceKM = distanceKM,
-                    isBusiness = isBusiness
-                )
-            )
-        }
+        )
     }
 
-    suspend fun insertServiceEvent(
-        vehicleId: Long,
-        name: String,
-        date: String,
-        odometer: Int,
-        totalCost: Double,
-        workTitle: String,
-        serviceStation: String
+    suspend fun insertServiceDetails(
+        eventId: Long, workTitle: String, serviceStation: String
     ) {
-        db.withTransaction {
-            val newEventId = db.eventDao().insert(
-                EventEntity(
-                    vehicleId = vehicleId,
-                    name = name,
-                    date = date,
-                    odometer = odometer,
-                    totalCost = totalCost
-                )
+        db.serviceDao().insert(
+            ServiceEntity(
+                eventId = eventId, workTitle = workTitle, serviceStation = serviceStation
             )
-
-            db.serviceDao().insert(
-                ServiceEntity(
-                    eventId = newEventId,
-                    workTitle = workTitle,
-                    serviceStation = serviceStation
-                )
-            )
-        }
+        )
     }
 
-    suspend fun insertFuelingEvent(
-        vehicleId: Long,
-        name: String,
-        date: String,
-        odometer: Int,
-        totalCost: Double,
-
-        fuelTypeId: Int,
-        volumeLiters: Double,
-        pricePerLiter: Double,
-        isFullTank: Boolean
+    suspend fun insertFuelingDetails(
+        eventId: Long, fuelTypeId: Int, volumeLiters: Double, pricePerLiter: Double, isFullTank: Boolean
     ) {
-        db.withTransaction {
-
-            val newEventId = db.eventDao().insert(
-                EventEntity(
-                    vehicleId = vehicleId,
-                    name = name,
-                    date = date,
-                    odometer = odometer,
-                    totalCost = totalCost
-                )
+        db.fuelDao().insert(
+            FuelingEntity(
+                eventId = eventId, fuelTypeId = fuelTypeId, volumeLiters = volumeLiters,
+                pricePerLiter = pricePerLiter, isFullTank = isFullTank
             )
-
-            db.fuelDao().insert(
-                FuelingEntity(
-                    eventId = newEventId,
-                    fuelTypeId = fuelTypeId,
-                    volumeLiters = volumeLiters,
-                    pricePerLiter = pricePerLiter,
-                    isFullTank = isFullTank
-                )
-            )
-        }
+        )
     }
 
     suspend fun deleteInId(id: Long) = db.eventDao().deleteById(id)

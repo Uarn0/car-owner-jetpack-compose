@@ -4,12 +4,11 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.mmmsssmmm.data.entity.VehiclesEntity
 
 @Entity(
     tableName = "events", foreignKeys = [ForeignKey(
         entity = VehiclesEntity::class,
-        parentColumns = ["id"],
+        parentColumns = ["globalVehicleId"],
         childColumns = ["vehicleId"],
         onDelete = ForeignKey.Companion.CASCADE
     )], indices = [Index("vehicleId")]

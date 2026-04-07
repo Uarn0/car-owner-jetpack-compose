@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -17,13 +18,17 @@ import androidx.navigation.navArgument
 import com.example.mmmsssmmm.data.Graph
 import com.example.mmmsssmmm.data.Graph.eventRepo
 import com.example.mmmsssmmm.data.Graph.vehicleRepo
+import com.example.mmmsssmmm.domain.item.VehicleHistoryItem
 import com.example.mmmsssmmm.eventScreen.EventInput
 import com.example.mmmsssmmm.eventScreen.EventList
 import com.example.mmmsssmmm.mainScreen.MainInput
 import com.example.mmmsssmmm.mainScreen.MainList
+import com.example.mmmsssmmm.subEventsListScreen.SubEventInput
+import com.example.mmmsssmmm.subEventsListScreen.SubEventsListScreen
 import com.example.mmmsssmmm.ui.common.EventsVMFactory
 import com.example.mmmsssmmm.ui.common.VehiclesVMFactory
 import com.example.mmmsssmmm.ui.events.EventsViewModel
+import com.example.mmmsssmmm.ui.events.SubEventViewModel
 import com.example.mmmsssmmm.ui.vehicles.VehiclesViewModel
 
 class MainActivity : ComponentActivity() {
@@ -62,46 +67,58 @@ fun Main() {
         }
 
         composable("AddVehicle") {
-            val vm: VehiclesViewModel = viewModel(
-                factory = VehiclesVMFactory(vehicleRepo)
-            )
+            val vm: VehiclesViewModel = viewModel(factory = VehiclesVMFactory(vehicleRepo))
+
+            val brands by vm.brands.collectAsStateWithLifecycle(initialValue = emptyList())
+            val models by vm.modelsForSelectedBrand.collectAsStateWithLifecycle(initialValue = emptyList())
 
             MainInput(
-                onSave = { name, type, image ->
-                    vm.add(1, "X5", 2008, 30.2, "CA2930CI", 2)
+                brands = brands,
+                models = models,
+                onBrandSelected = { brandId ->
+                    vm.loadModelsForBrand(brandId)
+                },
+                onSave = { modelId, year, tank, plate, imageUri ->
+                    vm.add(modelId, year, tank, plate, imageUri)
                     navController.popBackStack()
                 }
             )
         }
 
-        composable(route = "EventList/{vehicleId}",
+        composable(
+            route = "EventList/{vehicleId}",
             arguments = listOf(
                 navArgument("vehicleId") { type = NavType.LongType }
             )
-        )
-        { backStackEntry ->
+        ) { backStackEntry ->
+            val vehicleId = backStackEntry.arguments?.getLong("vehicleId") ?: 0L
+
             val vm: EventsViewModel = viewModel(
                 factory = EventsVMFactory(eventRepo),
                 viewModelStoreOwner = backStackEntry
             )
 
-            val events = vm.events.collectAsStateWithLifecycle().value
+            val events = vm.baseEvents.collectAsStateWithLifecycle().value
 
             EventList(
                 events = events,
-                onAddClick = {
-                    val id = backStackEntry.arguments?.getLong("vehicleId")!!
-                    navController.navigate("AddEvent/$id")
+
+                onEventClick = { eventId ->
+                    navController.navigate("SubEventsList/$eventId")
                 },
-                onDeleteClick = vm::allDelete
+
+                onAddEventClick = {
+                    navController.navigate("AddEvent/$vehicleId")
+                },
+
+                onDeleteEventClick = { eventId ->
+                    vm.allDelete(eventId)
+                }
             )
         }
-
         composable(
             route = "AddEvent/{vehicleId}",
-            arguments = listOf(
-                navArgument("vehicleId") { type = NavType.LongType}
-            )
+            arguments = listOf(navArgument("vehicleId") { type = NavType.LongType })
         ) { backStackEntry ->
             val vm: EventsViewModel = viewModel(
                 factory = EventsVMFactory(eventRepo),
@@ -109,38 +126,51 @@ fun Main() {
             )
 
             EventInput(
-                onSaveTrip = { name, date, odometer, cost, start, end, dist, isBus ->
-
-                    vm.addTrip(
-                        name = name,
-                        date = date,
-                        odometer = odometer,
-                        totalCost = cost,
-                        startPoint = start,
-                        endPoint = end,
-                        distanceKM = dist,
-                        isBusiness = isBus
-                    )
+                vm = vm,
+                onCancel = { navController.popBackStack() },
+                onEventCreated = {
                     navController.popBackStack()
+                }
+            )
+        }
 
-                },
-                onSaveFuel = { name, date, odometer, cost, fuelId, vol, price, isFull ->
+        composable(
+            route = "SubEventsList/{eventId}",
+            arguments = listOf(navArgument("eventId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getLong("eventId") ?: 0L
+            val vm: SubEventViewModel = viewModel(factory = EventsVMFactory(eventRepo))
 
-                    vm.addFueling(name, date, odometer, cost, fuelId, vol, price, isFull)
+            val subEvent = vm.currentSubEvent.collectAsStateWithLifecycle().value
+
+            if (subEvent != null) {
+                SubEventsListScreen(
+                    subEvents = listOf(subEvent),
+                    onAddSubEventClick = {
+                        navController.navigate("AddSubEvent/$eventId")
+                    },
+                    onDeleteSubEventClick = { item ->
+                        when(item) {
+                            is VehicleHistoryItem.Trip -> vm.tripDelete()
+                            is VehicleHistoryItem.Fueling -> vm.fuelDelete()
+                            is VehicleHistoryItem.Service -> vm.serviceDelete()
+                            else -> {}
+                        }
+                    }
+                )
+            }
+        }
+        composable(
+            route = "AddSubEvent/{eventId}",
+            arguments = listOf(navArgument("eventId") { type = NavType.LongType })
+        ) {
+            val vm: SubEventViewModel = viewModel(factory = EventsVMFactory(eventRepo))
+
+            SubEventInput(
+                vm = vm,
+                onDismiss = {
                     navController.popBackStack()
-
-                },
-                onSaveService = {name, date, odometer, cost, title, station  ->
-                    vm.addService(
-                        name = name,
-                        date = date,
-                        odometer = odometer,
-                        totalCost = cost,
-                        workTitle = title,
-                        serviceStation = station
-                    )
-                },
-                onCancel = { navController.popBackStack() }
+                }
             )
         }
     }

@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 2,
-    "identityHash": "2b4daa3eb6694418f3c68393b58ba021",
+    "version": 5,
+    "identityHash": "be7f20912f9c8319092fdd59031669f6",
     "entities": [
       {
         "tableName": "vehicles",
@@ -242,6 +242,17 @@
             "eventId"
           ]
         },
+        "indices": [
+          {
+            "name": "index_trip_eventId",
+            "unique": false,
+            "columnNames": [
+              "eventId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_trip_eventId` ON `${TABLE_NAME}` (`eventId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "events",
@@ -372,7 +383,7 @@
       },
       {
         "tableName": "fuel_types",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nameOfFuel` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nameOfFuel` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -388,7 +399,7 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
             "id"
           ]
@@ -396,7 +407,7 @@
       },
       {
         "tableName": "models",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `brandId` INTEGER NOT NULL, `bodyTypeId` INTEGER NOT NULL, `name` TEXT NOT NULL, `yearStart` INTEGER NOT NULL, `yearEnd` INTEGER NOT NULL, `imageResName` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`brandId`) REFERENCES `brands`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`bodyTypeId`) REFERENCES `body_types`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `brandId` INTEGER NOT NULL, `bodyTypeId` INTEGER NOT NULL, `name` TEXT NOT NULL, `yearStart` INTEGER NOT NULL, `yearEnd` INTEGER NOT NULL, `imageResName` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -466,36 +477,12 @@
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_models_bodyTypeId` ON `${TABLE_NAME}` (`bodyTypeId`)"
           }
-        ],
-        "foreignKeys": [
-          {
-            "table": "brands",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "brandId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          },
-          {
-            "table": "body_types",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "bodyTypeId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
         ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2b4daa3eb6694418f3c68393b58ba021')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'be7f20912f9c8319092fdd59031669f6')"
     ]
   }
 }

@@ -2,9 +2,12 @@ package com.example.mmmsssmmm.data.dictionary
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@Entity("fuel_types")
+@Serializable
+@Entity(tableName = "fuel_types")
 data class FuelDictEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val nameOfFuel: String
+    @PrimaryKey(autoGenerate = false) val id: Long,
+    @SerialName("name") val nameOfFuel: String
 )

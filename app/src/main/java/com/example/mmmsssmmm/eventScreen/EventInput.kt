@@ -2,86 +2,98 @@ package com.example.mmmsssmmm.eventScreen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.mmmsssmmm.ui.events.EventsViewModel
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EventInput(
-    onSaveTrip: (String, String, Int, Double, String, String, Int, Boolean) -> Unit,
-    onSaveFuel: (String, String, Int, Double, Int, Double, Double, Boolean) -> Unit,
-    onSaveService: (String, String, Int, Double, String, String) -> Unit,
-    onCancel: () -> Unit
+    vm: EventsViewModel,
+    onCancel: () -> Unit,
+    onEventCreated: (Long) -> Unit
 ) {
-    val options = listOf("Repair", "Trip", "Service")
-    var selected by remember { mutableStateOf(options.first()) }
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Новий запис",
+            style = MaterialTheme.typography.headlineMedium
+        )
 
-        Text("Please select the event")
-        options.forEach { option ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .height(60.dp)
-                    .selectable(
-                        selected = (option == selected),
-                        onClick = { selected = option },
-                        role = Role.RadioButton
-                    )
+        Spacer(Modifier.height(8.dp))
+
+        Text(
+            text = "Створіть подію для цього дня. Деталі (заправки, ремонти, маршрути) ви зможете додати на наступному екрані.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(Modifier.height(32.dp))
+
+        OutlinedTextField(
+            value = vm.odometer,
+            onValueChange = { if (it.all { char -> char.isDigit() }) vm.odometer = it },
+            label = { Text("Поточний одометр (км)") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        Spacer(Modifier.height(32.dp))
+
+        Row(Modifier.fillMaxWidth()) {
+            OutlinedButton(
+                onClick = onCancel,
+                modifier = Modifier.weight(1f).height(56.dp)
             ) {
-                RadioButton(selected = (option == selected), onClick = null)
-                Text(
-                    option,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(start = 30.dp)
-                )
+                Text("Скасувати")
+            }
+
+            Spacer(Modifier.width(16.dp))
+
+            Button(
+                onClick = {
+                    val time = whatTime()
+                    val odo = vm.odometer.toIntOrNull() ?: 0
+
+                    vm.createBaseEvent(
+                        name = "Подія",
+                        date = time,
+                        odometer = odo,
+                        totalCost = 0.0,
+                        onSuccess = { newEventId ->
+                            onEventCreated(newEventId)
+                        }
+                    )
+                },
+                modifier = Modifier.weight(1f).height(56.dp),
+                enabled = vm.odometer.isNotBlank()
+            ) {
+                Icon(Icons.Default.Add, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text("Створити")
             }
         }
-        Button(
-            onClick = {
-                onSave(
-                    selected, whatType(selected), whatTime()
-                )
-            }) {
-            Icon(Icons.Default.Add, contentDescription = "Add")
-            Text("Add")
-        }
-
-
     }
 }
 
-fun whatType(event: String): Int {
-    return when (event) {
-        "Repair" -> 0
-        "Trip" -> 1
-        else -> 2
-    }
-}
-
+@RequiresApi(Build.VERSION_CODES.O)
 fun whatTime(): String {
     return OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 }

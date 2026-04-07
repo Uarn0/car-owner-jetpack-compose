@@ -1,5 +1,8 @@
 package com.example.mmmsssmmm.ui.events
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,57 +13,63 @@ import kotlinx.coroutines.launch
 
 class EventsViewModel(
     private val repo: EventRepository,
-    savedStateHandle: SavedStateHandle
-) : ViewModel(){
+    savedStateHandle: SavedStateHandle,
+) : ViewModel() {
 
     private val vehicleId: Long = checkNotNull(savedStateHandle["vehicleId"])
 
-    val events = repo.observeEvents(vehicleId)
+    var odometer by mutableStateOf("")
+    var totalCost by mutableStateOf("")
+
+    var startPoint by mutableStateOf("")
+    var endPoint by mutableStateOf("")
+    var distance by mutableStateOf("")
+
+    var volume by mutableStateOf("")
+    var pricePerLiter by mutableStateOf("")
+
+    var workTitle by mutableStateOf("")
+    var stationName by mutableStateOf("")
+
+
+
+    val baseEvents = repo.observeBaseEvents(vehicleId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    fun addTrip(
+
+    fun createBaseEvent(
         name: String, date: String, odometer: Int, totalCost: Double,
-        startPoint: String, endPoint: String, distanceKM: Int, isBusiness: Boolean
+        onSuccess: (Long) -> Unit,
     ) = viewModelScope.launch {
-        repo.insertTripEvent(
-            vehicleId = vehicleId, // Беремо ID поточної машини з ViewModel
-            name = name, time = date,
-            odometer = odometer, totalCost = totalCost,
-            startPoint = startPoint, endPoint = endPoint,
-            distanceKM = distanceKM, isBusiness = isBusiness
-        )
+        val newEventId = repo.insertBasicEvent(vehicleId, name, date, odometer, totalCost)
+        onSuccess(newEventId)
     }
 
-
-    fun addFueling(
-        name: String, date: String, odometer: Int, totalCost: Double,
-        fuelTypeId: Int, volumeLiters: Double, pricePerLiter: Double, isFullTank: Boolean
+    fun addTripToEvent(
+        eventId: Long, startPoint: String, endPoint: String, distanceKM: Int, isBusiness: Boolean,
     ) = viewModelScope.launch {
-        repo.insertFuelingEvent(
-            vehicleId = vehicleId,
-            name = name, date = date,
-            odometer = odometer, totalCost = totalCost,
-            fuelTypeId = fuelTypeId, volumeLiters = volumeLiters,
-            pricePerLiter = pricePerLiter, isFullTank = isFullTank
-        )
+        repo.insertTripDetails(eventId, startPoint, endPoint, distanceKM, isBusiness)
     }
 
-    // Додати сервіс/ремонт
-    fun addService(
-        name: String, date: String, odometer: Int, totalCost: Double,
-        workTitle: String, serviceStation: String
+    fun addFuelingToEvent(
+        eventId: Long,
+        fuelTypeId: Int,
+        volumeLiters: Double,
+        pricePerLiter: Double,
+        isFullTank: Boolean,
     ) = viewModelScope.launch {
-        repo.insertServiceEvent(
-            vehicleId = vehicleId,
-            name = name, date = date,
-            odometer = odometer, totalCost = totalCost,
-            workTitle = workTitle, serviceStation = serviceStation
-        )
+        repo.insertFuelingDetails(eventId, fuelTypeId, volumeLiters, pricePerLiter, isFullTank)
     }
+
+    fun addServiceToEvent(
+        eventId: Long, workTitle: String, serviceStation: String,
+    ) = viewModelScope.launch {
+        repo.insertServiceDetails(eventId, workTitle, serviceStation)
+    }
+
 
     fun allDelete(id: Long) = viewModelScope.launch { repo.deleteInId(id) }
 
-    // (Ці методи можна залишити, якщо вони є в репозиторії, але зазвичай достатньо одного allDelete)
     fun tripDelete(id: Long) = viewModelScope.launch { repo.tripDeleteInId(id) }
     fun serviceDelete(id: Long) = viewModelScope.launch { repo.serviceDeleteInId(id) }
     fun fuelDelete(id: Long) = viewModelScope.launch { repo.fuelDeleteInId(id) }

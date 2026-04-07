@@ -2,9 +2,11 @@ package com.example.mmmsssmmm.data.dictionary
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
-@Entity("body_types")
+@Serializable
+@Entity(tableName = "body_types")
 data class BrandTypeDictEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey(autoGenerate = false) val id: Long,
     val typeName: String
 )

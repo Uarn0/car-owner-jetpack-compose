@@ -11,6 +11,7 @@ import com.example.mmmsssmmm.data.dao.TripDAO
 import com.example.mmmsssmmm.data.dao.VehiclesDAO
 import com.example.mmmsssmmm.data.dictionary.BrandDictEntity
 import com.example.mmmsssmmm.data.dictionary.BrandTypeDictEntity
+import com.example.mmmsssmmm.data.dictionary.DatabaseCallback
 import com.example.mmmsssmmm.data.dictionary.DictionaryDao
 import com.example.mmmsssmmm.data.dictionary.FuelDictEntity
 import com.example.mmmsssmmm.data.dictionary.ModelDictEntity
@@ -19,6 +20,9 @@ import com.example.mmmsssmmm.data.entity.FuelingEntity
 import com.example.mmmsssmmm.data.entity.ServiceEntity
 import com.example.mmmsssmmm.data.entity.TripEntity
 import com.example.mmmsssmmm.data.entity.VehiclesEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 @Database(
     entities = [
@@ -31,7 +35,7 @@ import com.example.mmmsssmmm.data.entity.VehiclesEntity
         BrandTypeDictEntity::class,
         FuelDictEntity::class,
         ModelDictEntity::class],
-    version = 2,
+    version = 5,
     exportSchema = true
 )
 
@@ -50,18 +54,23 @@ abstract class AppDatabase: RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
+        private val databaseScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
         fun getInstance(context: Context): AppDatabase{
             return INSTANCE ?: synchronized(this){
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "garage.db"
-                ).fallbackToDestructiveMigration().build()
+                    "garage_v9.db"
+                )
+                    .fallbackToDestructiveMigration()
+                    .addCallback(DatabaseCallback(context, databaseScope))
+                    .build()
+
                 INSTANCE = instance
                 instance
             }
         }
-
     }
 }
 

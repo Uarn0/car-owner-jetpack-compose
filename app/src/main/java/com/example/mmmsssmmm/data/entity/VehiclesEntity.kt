@@ -20,9 +20,10 @@ import com.example.mmmsssmmm.data.dictionary.ModelDictEntity
     indices = [Index("modelId")]
 )
 data class VehiclesEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey(autoGenerate = true) val globalVehicleId: Long = 0,
     val modelId: Long,
     val manufactureYear: Int,
     val tankCapacity: Double,
-    val plateNumber: String
+    val plateNumber: String,
+    val userImageUri: String? = null
 )
