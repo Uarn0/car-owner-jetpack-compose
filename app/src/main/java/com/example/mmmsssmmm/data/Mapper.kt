@@ -39,9 +39,11 @@ import com.example.mmmsssmmm.domain.item.VehicleHistoryItem
 //    )
 //}
 
-fun FullEventDetails.toDomain(): VehicleHistoryItem {
-    return when {
-        this.trip != null -> {
+fun FullEventDetails.toDomain(): List<VehicleHistoryItem> {
+    val items = mutableListOf<VehicleHistoryItem>()
+
+    if (this.trip != null) {
+        items.add(
             VehicleHistoryItem.Trip(
                 eventId = this.event.globalEventId,
                 date = this.event.date,
@@ -52,8 +54,11 @@ fun FullEventDetails.toDomain(): VehicleHistoryItem {
                 distanceKM = this.trip.distanceKM,
                 isBusiness = this.trip.isBusiness
             )
-        }
-        this.fueling != null -> {
+        )
+    }
+
+    if (this.fueling != null) {
+        items.add(
             VehicleHistoryItem.Fueling(
                 eventId = this.event.globalEventId,
                 date = this.event.date,
@@ -63,8 +68,11 @@ fun FullEventDetails.toDomain(): VehicleHistoryItem {
                 pricePerLiter = this.fueling.pricePerLiter,
                 isFullTank = this.fueling.isFullTank
             )
-        }
-        this.service != null -> {
+        )
+    }
+
+    if (this.service != null) {
+        items.add(
             VehicleHistoryItem.Service(
                 eventId = this.event.globalEventId,
                 date = this.event.date,
@@ -73,14 +81,19 @@ fun FullEventDetails.toDomain(): VehicleHistoryItem {
                 workTitle = this.service.workTitle,
                 serviceStation = this.service.serviceStation
             )
-        }
-        else -> {
+        )
+    }
+
+    if (items.isEmpty()) {
+        items.add(
             VehicleHistoryItem.Base(
                 eventId = this.event.globalEventId,
                 date = this.event.date,
                 odometer = this.event.odometer,
                 totalCost = this.event.totalCost
             )
-        }
+        )
     }
+
+    return items
 }

@@ -7,7 +7,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mmmsssmmm.data.repos.EventRepository
+import com.example.mmmsssmmm.domain.item.VehicleHistoryItem
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -30,8 +32,12 @@ class SubEventViewModel(
 
     var totalCost by mutableStateOf("")
 
-    val currentSubEvent = repo.observeSingleSubEvent(eventId)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    val currentSubEvent: StateFlow<List<VehicleHistoryItem>> = repo.observeSingleSubEvent(eventId)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     fun updateFuelingData(newVol: String = volume, newPrice: String = pricePerLiter) {
         volume = newVol.replace(',', '.')

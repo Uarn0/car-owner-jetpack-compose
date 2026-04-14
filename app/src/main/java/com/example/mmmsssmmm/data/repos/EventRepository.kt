@@ -1,20 +1,33 @@
 package com.example.mmmsssmmm.data.repos
 
-import androidx.room.withTransaction
 import com.example.mmmsssmmm.data.AppDatabase
 import com.example.mmmsssmmm.data.entity.EventEntity
 import com.example.mmmsssmmm.data.entity.FuelingEntity
 import com.example.mmmsssmmm.data.entity.ServiceEntity
 import com.example.mmmsssmmm.data.entity.TripEntity
 import com.example.mmmsssmmm.data.toDomain
+import com.example.mmmsssmmm.data.tuples.CTOTuple
+import com.example.mmmsssmmm.data.tuples.MostTraveledVehicleTuple
+import com.example.mmmsssmmm.data.tuples.TotalCostForFuelTuple
 import com.example.mmmsssmmm.domain.item.VehicleHistoryItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.collections.emptyList
 
 class EventRepository(private val db: AppDatabase) {
 
     fun observeBaseEvents(vehicleId: Long): Flow<List<EventEntity>> {
         return db.eventDao().observeBaseEvents(vehicleId)
+    }
+
+    fun observeFuelCostHistory(): Flow<List<TotalCostForFuelTuple>>{
+        return db.eventDao().getFuelCostsHistory()
+    }
+    fun observeAllCTOStats(workTitle: String): Flow<List<CTOTuple>> {
+        return db.eventDao().getCTOHistory(workTitle)
+    }
+    fun observeDistanceStats(): Flow<List<MostTraveledVehicleTuple>> {
+        return db.eventDao().getLongestTripsHistory()
     }
 
     suspend fun addToEventStats(eventId: Long, cost: Double, odometer: Int) {
@@ -26,10 +39,13 @@ class EventRepository(private val db: AppDatabase) {
 //            .observeFullEvents(vehicleId)
 //            .map { list -> list.map { fullEvent -> fullEvent.toDomain() } }
 //    }
-    fun observeSingleSubEvent(eventId: Long): Flow<VehicleHistoryItem?> {
+    //EventRepository
+    fun observeSingleSubEvent(eventId: Long): Flow<List<VehicleHistoryItem>> {
         return db.eventDao()
             .observeSingleEvent(eventId)
-            .map { fullEvent -> fullEvent?.toDomain() }
+            .map { fullEvent ->
+                fullEvent?.toDomain() ?: emptyList()
+            }
     }
     suspend fun insertBasicEvent(
         vehicleId: Long, name: String, date: String, odometer: Int, totalCost: Double
@@ -79,4 +95,5 @@ class EventRepository(private val db: AppDatabase) {
     suspend fun serviceDeleteInId(id: Long) = db.serviceDao().delete(id)
     suspend fun tripDeleteInId(id: Long) = db.tripDao().delete(id)
     suspend fun fuelDeleteInId(id: Long) = db.fuelDao().delete(id)
+
 }

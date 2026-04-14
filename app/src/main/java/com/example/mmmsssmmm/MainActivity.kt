@@ -23,6 +23,8 @@ import com.example.mmmsssmmm.eventScreen.EventInput
 import com.example.mmmsssmmm.eventScreen.EventList
 import com.example.mmmsssmmm.mainScreen.MainInput
 import com.example.mmmsssmmm.mainScreen.MainList
+import com.example.mmmsssmmm.statsScreen.StatsScreen
+import com.example.mmmsssmmm.statsScreen.StatsViewModel
 import com.example.mmmsssmmm.subEventsListScreen.SubEventInput
 import com.example.mmmsssmmm.subEventsListScreen.SubEventsListScreen
 import com.example.mmmsssmmm.ui.common.EventsVMFactory
@@ -30,6 +32,7 @@ import com.example.mmmsssmmm.ui.common.VehiclesVMFactory
 import com.example.mmmsssmmm.ui.events.EventsViewModel
 import com.example.mmmsssmmm.ui.events.SubEventViewModel
 import com.example.mmmsssmmm.ui.vehicles.VehiclesViewModel
+import kotlin.collections.emptyList
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -145,7 +148,7 @@ fun Main() {
 
             if (subEvent != null) {
                 SubEventsListScreen(
-                    subEvents = listOf(subEvent),
+                    subEvents = subEvent,
                     onAddSubEventClick = {
                         navController.navigate("AddSubEvent/$eventId")
                     },
@@ -171,6 +174,16 @@ fun Main() {
                 onDismiss = {
                     navController.popBackStack()
                 }
+            )
+        }
+
+        composable(
+            route = "StatsSubEvent/{eventId}",
+            arguments = listOf(navArgument("eventId") { type = NavType.LongType })
+        ) {
+            val vm: StatsViewModel = viewModel(factory = EventsVMFactory(eventRepo))
+            StatsScreen(
+                vm = vm
             )
         }
     }

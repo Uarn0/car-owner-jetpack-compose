@@ -47,7 +47,9 @@ fun SubEventsListScreen(
             }
         } else {
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(bottom = 120.dp, start = 16.dp, end = 16.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 120.dp, start = 16.dp, end = 16.dp),
                 contentPadding = PaddingValues(top = 16.dp)
             ) {
                 items(
@@ -60,20 +62,26 @@ fun SubEventsListScreen(
                                 onDelete = { onDeleteSubEventClick(event) }
                             )
                         }
+
                         is VehicleHistoryItem.Fueling -> {
                             FuelingCard(
                                 fueling = event,
                                 onDelete = { onDeleteSubEventClick(event) }
                             )
                         }
+
                         is VehicleHistoryItem.Service -> {
                             ServiceCard(
                                 service = event,
                                 onDelete = { onDeleteSubEventClick(event) }
                             )
                         }
-                        is VehicleHistoryItem.Base ->{
-                            Text("У цій події ще немає записів. Додайте щось!", modifier = Modifier.padding(16.dp))
+
+                        is VehicleHistoryItem.Base -> {
+                            Text(
+                                "У цій події ще немає записів. Додайте щось!",
+                                modifier = Modifier.padding(16.dp)
+                            )
                         }
                     }
                 }
@@ -82,7 +90,9 @@ fun SubEventsListScreen(
 
         Button(
             onClick = onAddSubEventClick,
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 32.dp)
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 32.dp)
         ) {
             Icon(Icons.Default.Add, contentDescription = "Add SubEvent")
             Spacer(Modifier.width(8.dp))
@@ -94,6 +104,7 @@ fun SubEventsListScreen(
 
 @Composable
 fun TripCard(trip: VehicleHistoryItem.Trip, onDelete: () -> Unit) {
+    Spacer(modifier = Modifier.width(16.dp))
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -119,7 +130,10 @@ fun TripCard(trip: VehicleHistoryItem.Trip, onDelete: () -> Unit) {
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-                Text(text = "Дистанція: ${trip.distanceKM} км", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = "Дистанція: ${trip.distanceKM} км",
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Text(
                     text = "Одометр: ${trip.odometer} км • Витрати: ${trip.totalCost} ₴",
                     style = MaterialTheme.typography.bodySmall,
@@ -129,7 +143,11 @@ fun TripCard(trip: VehicleHistoryItem.Trip, onDelete: () -> Unit) {
             }
 
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = MaterialTheme.colorScheme.error
+                )
             }
         }
     }
@@ -137,6 +155,7 @@ fun TripCard(trip: VehicleHistoryItem.Trip, onDelete: () -> Unit) {
 
 @Composable
 fun FuelingCard(fueling: VehicleHistoryItem.Fueling, onDelete: () -> Unit) {
+    Spacer(modifier = Modifier.width(16.dp))
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -175,7 +194,11 @@ fun FuelingCard(fueling: VehicleHistoryItem.Fueling, onDelete: () -> Unit) {
             }
 
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = MaterialTheme.colorScheme.error
+                )
             }
         }
     }
@@ -183,6 +206,7 @@ fun FuelingCard(fueling: VehicleHistoryItem.Fueling, onDelete: () -> Unit) {
 
 @Composable
 fun ServiceCard(service: VehicleHistoryItem.Service, onDelete: () -> Unit) {
+    Spacer(modifier = Modifier.width(16.dp))
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -208,7 +232,10 @@ fun ServiceCard(service: VehicleHistoryItem.Service, onDelete: () -> Unit) {
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-                Text(text = "СТО: ${service.serviceStation}", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    text = "СТО: ${service.serviceStation}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Text(
                     text = "Одометр: ${service.odometer} км • Вартість: ${service.totalCost} ₴",
                     style = MaterialTheme.typography.bodySmall,
@@ -218,7 +245,11 @@ fun ServiceCard(service: VehicleHistoryItem.Service, onDelete: () -> Unit) {
             }
 
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "Delete",
+                    tint = MaterialTheme.colorScheme.error
+                )
             }
         }
     }

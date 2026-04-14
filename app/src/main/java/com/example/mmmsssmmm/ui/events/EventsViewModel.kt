@@ -21,15 +21,6 @@ class EventsViewModel(
     var odometer by mutableStateOf("")
     var totalCost by mutableStateOf("")
 
-    var startPoint by mutableStateOf("")
-    var endPoint by mutableStateOf("")
-    var distance by mutableStateOf("")
-
-    var volume by mutableStateOf("")
-    var pricePerLiter by mutableStateOf("")
-
-    var workTitle by mutableStateOf("")
-    var stationName by mutableStateOf("")
 
 
 
@@ -45,32 +36,6 @@ class EventsViewModel(
         onSuccess(newEventId)
     }
 
-    fun addTripToEvent(
-        eventId: Long, startPoint: String, endPoint: String, distanceKM: Int, isBusiness: Boolean,
-    ) = viewModelScope.launch {
-        repo.insertTripDetails(eventId, startPoint, endPoint, distanceKM, isBusiness)
-    }
-
-    fun addFuelingToEvent(
-        eventId: Long,
-        fuelTypeId: Int,
-        volumeLiters: Double,
-        pricePerLiter: Double,
-        isFullTank: Boolean,
-    ) = viewModelScope.launch {
-        repo.insertFuelingDetails(eventId, fuelTypeId, volumeLiters, pricePerLiter, isFullTank)
-    }
-
-    fun addServiceToEvent(
-        eventId: Long, workTitle: String, serviceStation: String,
-    ) = viewModelScope.launch {
-        repo.insertServiceDetails(eventId, workTitle, serviceStation)
-    }
-
-
     fun allDelete(id: Long) = viewModelScope.launch { repo.deleteInId(id) }
 
-    fun tripDelete(id: Long) = viewModelScope.launch { repo.tripDeleteInId(id) }
-    fun serviceDelete(id: Long) = viewModelScope.launch { repo.serviceDeleteInId(id) }
-    fun fuelDelete(id: Long) = viewModelScope.launch { repo.fuelDeleteInId(id) }
 }
