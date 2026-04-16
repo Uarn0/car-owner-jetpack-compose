@@ -65,7 +65,8 @@ fun Main() {
                 vehicles = vehicles,
                 onDetailsClick = { id -> navController.navigate("EventList/$id")},
                 onAddClick = { navController.navigate("AddVehicle") },
-                onDelete = vm::delete
+                onDelete = vm::delete,
+                onStatsClick = { navController.navigate("StatsSubEvent") }
             )
         }
 
@@ -178,8 +179,7 @@ fun Main() {
         }
 
         composable(
-            route = "StatsSubEvent/{eventId}",
-            arguments = listOf(navArgument("eventId") { type = NavType.LongType })
+            route = "StatsSubEvent",
         ) {
             val vm: StatsViewModel = viewModel(factory = EventsVMFactory(eventRepo))
             StatsScreen(

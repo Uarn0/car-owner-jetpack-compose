@@ -7,3 +7,7 @@ data class TotalCostForFuelTuple(
     val fuelType: String,
     val totalCost: Double
 )
+data class FuelTypeCostTuple(
+    val fuelType: String,
+    val totalCost: Double
+)

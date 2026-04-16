@@ -6,5 +6,15 @@ data class CTOTuple(
     val date: String,
     val station: String,
     val whatWork: String,
-    val cost: Int
+    val cost: Double
+)
+data class CtoCostByCarTuple(
+    val carName: String,
+    val plateNumber: String,
+    val totalCost: Double
+)
+
+data class CtoStationCountTuple(
+    val stationName: String,
+    val visitCount: Int
 )

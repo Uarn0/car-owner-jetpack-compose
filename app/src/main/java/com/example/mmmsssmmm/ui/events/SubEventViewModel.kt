@@ -29,7 +29,7 @@ class SubEventViewModel(
 
     var workTitle by mutableStateOf("")
     var stationName by mutableStateOf("")
-
+    var serviceC by mutableStateOf("")
     var totalCost by mutableStateOf("")
 
     val currentSubEvent: StateFlow<List<VehicleHistoryItem>> = repo.observeSingleSubEvent(eventId)
@@ -82,7 +82,11 @@ class SubEventViewModel(
     }
 
     fun addService() = viewModelScope.launch {
-        repo.insertServiceDetails(eventId, workTitle, stationName)
+        val finalCost = serviceC.toDoubleOrNull() ?: 0.0
+
+        repo.insertServiceDetails(eventId, workTitle, stationName, finalCost)
+
+        repo.addToEventStats(eventId, finalCost, 0)
     }
 
     fun tripDelete() = viewModelScope.launch { repo.tripDeleteInId(eventId) }

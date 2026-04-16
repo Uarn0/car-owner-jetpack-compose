@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.mmmsssmmm.data.formatHumanReadableDate
 
 @Composable
 fun FuelStatCard(
@@ -26,13 +27,14 @@ fun FuelStatCard(
     fuelType: String,
     date: String,
     totalCost: Double
-    ) {
+) {
+    val formattedDate = formatHumanReadableDate(date)
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onTertiaryContainer),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
     ){
         Row(
             modifier = Modifier.padding(16.dp),
@@ -65,7 +67,7 @@ fun FuelStatCard(
                 )
 
                 Text(
-                    text = "$date | ",
+                    text = "$formattedDate | ",
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.titleMedium
                 )

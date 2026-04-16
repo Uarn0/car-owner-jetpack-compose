@@ -82,8 +82,8 @@ fun SubEventInput(
                 OutlinedTextField(value = vm.stationName, onValueChange = { vm.stationName = it }, label = { Text("Назва СТО") }, modifier = Modifier.fillMaxWidth())
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
-                    value = vm.totalCost,
-                    onValueChange = { vm.totalCost = it.replace(',', '.') },
+                    value = vm.serviceC,
+                    onValueChange = { vm.serviceC = it.replace(',', '.') },
                     label = { Text("Вартість (₴)") },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)

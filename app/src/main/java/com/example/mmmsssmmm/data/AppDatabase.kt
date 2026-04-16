@@ -35,7 +35,7 @@ import kotlinx.coroutines.SupervisorJob
         BrandTypeDictEntity::class,
         FuelDictEntity::class,
         ModelDictEntity::class],
-    version = 5,
+    version = 6,
     exportSchema = true
 )
 
@@ -61,7 +61,7 @@ abstract class AppDatabase: RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "garage_v9.db"
+                    "garage_v10.db"
                 )
                     .fallbackToDestructiveMigration()
                     .addCallback(DatabaseCallback(context, databaseScope))

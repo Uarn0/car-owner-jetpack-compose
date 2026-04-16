@@ -1,9 +1,13 @@
 package com.example.mmmsssmmm.statsScreen.statCards
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.Card
@@ -16,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.mmmsssmmm.data.formatHumanReadableDate
 
 
 @Composable
@@ -23,61 +28,47 @@ fun CTOStatsCard(
     date: String,
     carName: String,
     plateNumber: String,
-    cost: Int,
+    cost: Double,
     whatWork: String,
     station: String
 ) {
+    val formattedDate = formatHumanReadableDate(date)
+
     Card(
-        modifier = Modifier.fillMaxSize().padding(8.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onSecondary)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Spacer(modifier = Modifier.fillMaxSize().padding(4.dp))
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Icon(
-                imageVector = Icons.Default.Build,
-                contentDescription = "CTO Stats"
-            )
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Build,
+                    contentDescription = "CTO Stats",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "$carName ($plateNumber)",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
 
-            Text(
-                text = "$carName | ",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium
-            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "$plateNumber | ",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium
-            )
+            Text(text = "СТО: $station", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Що робили: $whatWork", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Дата: $formattedDate", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
 
-            Text(
-                text = "$date | ",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium
-            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = "$station | ",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            Text(
-                text = "$whatWork | ",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            Text(
-                text = "$cost",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium
-            )
-
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Text(
+                    text = "Вартість: $cost ₴",
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
         }
     }
 }

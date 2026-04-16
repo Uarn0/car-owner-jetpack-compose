@@ -19,17 +19,27 @@ class EventRepository(private val db: AppDatabase) {
     fun observeBaseEvents(vehicleId: Long): Flow<List<EventEntity>> {
         return db.eventDao().observeBaseEvents(vehicleId)
     }
+    //Паливо початок
+//    fun observeFuelCostHistory(): Flow<List<TotalCostForFuelTuple>>{
+//        return db.eventDao().getFuelCostsHistory()
+//    }
+    fun getFuelHistoryBetweenDates() = db.eventDao().getFuelHistoryBetweenDates()
 
-    fun observeFuelCostHistory(): Flow<List<TotalCostForFuelTuple>>{
-        return db.eventDao().getFuelCostsHistory()
-    }
+    fun getTotalCostByFuelType() = db.eventDao().getTotalCostByFuelType()
+
+    fun getMostExpensiveFueling() = db.eventDao().getMostExpensiveFueling()
+    //Паливо кінець
+    //Сто початок
     fun observeAllCTOStats(workTitle: String): Flow<List<CTOTuple>> {
         return db.eventDao().getCTOHistory(workTitle)
     }
-    fun observeDistanceStats(): Flow<List<MostTraveledVehicleTuple>> {
-        return db.eventDao().getLongestTripsHistory()
-    }
 
+    fun getCtoCostsByCar() = db.eventDao().getCtoCostsByCar()
+
+    fun getPopularStations() = db.eventDao().getPopularStations()
+    //Сто кінець
+    fun observeDistanceStats() =db.eventDao().getLongestTripsHistory()
+    fun getPopularRoutes() = db.eventDao().getPopularRoutes()
     suspend fun addToEventStats(eventId: Long, cost: Double, odometer: Int) {
         db.eventDao().incrementEventStats(eventId, cost, odometer)
     }
@@ -39,7 +49,7 @@ class EventRepository(private val db: AppDatabase) {
 //            .observeFullEvents(vehicleId)
 //            .map { list -> list.map { fullEvent -> fullEvent.toDomain() } }
 //    }
-    //EventRepository
+
     fun observeSingleSubEvent(eventId: Long): Flow<List<VehicleHistoryItem>> {
         return db.eventDao()
             .observeSingleEvent(eventId)
@@ -70,11 +80,11 @@ class EventRepository(private val db: AppDatabase) {
     }
 
     suspend fun insertServiceDetails(
-        eventId: Long, workTitle: String, serviceStation: String
+        eventId: Long, workTitle: String, serviceStation: String, serviceCost: Double
     ) {
         db.serviceDao().insert(
             ServiceEntity(
-                eventId = eventId, workTitle = workTitle, serviceStation = serviceStation
+                eventId = eventId, workTitle = workTitle, serviceStation = serviceStation, serviceCost = serviceCost
             )
         )
     }

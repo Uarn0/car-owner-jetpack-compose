@@ -8,6 +8,7 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.mmmsssmmm.data.repos.EventRepository
 import com.example.mmmsssmmm.data.repos.VehicleRepository
+import com.example.mmmsssmmm.statsScreen.StatsViewModel
 import com.example.mmmsssmmm.ui.events.EventsViewModel
 import com.example.mmmsssmmm.ui.events.SubEventViewModel
 import com.example.mmmsssmmm.ui.vehicles.VehiclesViewModel
@@ -35,7 +36,11 @@ class EventsVMFactory(
                 SubEventViewModel(repo, savedStateHandle) as T
             }
 
-            else -> throw IllegalArgumentException("Unknown ViewModel class")
+            modelClass.isAssignableFrom(StatsViewModel::class.java) -> {
+                StatsViewModel(repo) as T
+            }
+
+            else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
     }
 }

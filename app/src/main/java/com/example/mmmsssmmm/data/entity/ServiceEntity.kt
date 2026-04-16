@@ -19,4 +19,5 @@ data class ServiceEntity(
     @PrimaryKey val eventId: Long,
     val workTitle: String,
     val serviceStation: String,
+    val serviceCost: Double
 )

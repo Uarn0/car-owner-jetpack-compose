@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,14 +25,24 @@ fun MainList(
     vehicles: List<FullVehicleDetails>,
     onDetailsClick: (Long) -> Unit,
     onAddClick: () -> Unit,
-    onDelete: (Long) -> Unit
+    onDelete: (Long) -> Unit,
+    onStatsClick: () -> Unit
 ) {
     val context = LocalContext.current
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddClick) {
-                Icon(Icons.Default.Add, contentDescription = "Add Vehicle")
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                SmallFloatingActionButton(onClick = onStatsClick) {
+                    Icon(Icons.Default.QueryStats, contentDescription = "See Stats")
+                }
+
+                FloatingActionButton(onClick = onAddClick) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Vehicle")
+                }
             }
         }
     ) { innerPadding ->
