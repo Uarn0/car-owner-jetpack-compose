@@ -14,9 +14,6 @@ interface DictionaryDao {
     @Query("SELECT * FROM brands ORDER BY brandName ASC")
     fun observeBrands(): Flow<List<BrandDictEntity>>
 
-    @Query("SELECT * FROM body_types ORDER BY typeName ASC")
-    fun observeBodyTypes(): Flow<List<BrandTypeDictEntity>>
-
     @Query("SELECT * FROM models WHERE brandId = :brandId ORDER BY name ASC")
     fun observeModels(brandId: Long): Flow<List<ModelDictEntity>>
 

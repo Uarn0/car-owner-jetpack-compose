@@ -20,7 +20,6 @@ sealed class VehicleHistoryItem {
         val startPoint: String,
         val endPoint: String,
         val distanceKM: Int,
-        val isBusiness: Boolean
     ): VehicleHistoryItem()
 
     data class Fueling(
@@ -30,7 +29,7 @@ sealed class VehicleHistoryItem {
         override val totalCost: Double,
         val volumeLiters: Double,
         val pricePerLiter: Double,
-        val isFullTank: Boolean
+        val isFullTank: Boolean?
     ): VehicleHistoryItem()
 
     data class Service(

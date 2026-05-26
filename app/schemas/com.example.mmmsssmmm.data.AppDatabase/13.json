@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 6,
-    "identityHash": "669214fbbdf36ed7662b27cc6785fec4",
+    "version": 13,
+    "identityHash": "cc3714b09c99156f44277f9fc0073e7b",
     "entities": [
       {
         "tableName": "vehicles",
@@ -209,7 +209,7 @@
       },
       {
         "tableName": "trip",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventId` INTEGER NOT NULL, `startPoint` TEXT NOT NULL, `endPoint` TEXT NOT NULL, `distanceKM` INTEGER NOT NULL, `isBusiness` INTEGER NOT NULL, PRIMARY KEY(`eventId`), FOREIGN KEY(`eventId`) REFERENCES `events`(`globalEventId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventId` INTEGER NOT NULL, `startPoint` TEXT NOT NULL, `endPoint` TEXT NOT NULL, `distanceKM` INTEGER NOT NULL, PRIMARY KEY(`eventId`), FOREIGN KEY(`eventId`) REFERENCES `events`(`globalEventId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "eventId",
@@ -232,12 +232,6 @@
           {
             "fieldPath": "distanceKM",
             "columnName": "distanceKM",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "isBusiness",
-            "columnName": "isBusiness",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -275,7 +269,7 @@
       },
       {
         "tableName": "fueling",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventId` INTEGER NOT NULL, `volumeLiters` REAL NOT NULL, `fuelTypeId` INTEGER, `pricePerLiter` REAL NOT NULL, `isFullTank` INTEGER NOT NULL, PRIMARY KEY(`eventId`), FOREIGN KEY(`eventId`) REFERENCES `events`(`globalEventId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventId` INTEGER NOT NULL, `volumeLiters` REAL NOT NULL, `fuelTypeId` INTEGER, `pricePerLiter` REAL NOT NULL, `isFullTank` INTEGER, PRIMARY KEY(`eventId`), FOREIGN KEY(`eventId`) REFERENCES `events`(`globalEventId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "eventId",
@@ -303,8 +297,7 @@
           {
             "fieldPath": "isFullTank",
             "columnName": "isFullTank",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -412,7 +405,7 @@
       },
       {
         "tableName": "models",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `brandId` INTEGER NOT NULL, `bodyTypeId` INTEGER NOT NULL, `name` TEXT NOT NULL, `yearStart` INTEGER NOT NULL, `yearEnd` INTEGER NOT NULL, `imageResName` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `brandId` INTEGER NOT NULL, `bodyTypeId` INTEGER NOT NULL, `name` TEXT NOT NULL, `yearStart` INTEGER NOT NULL, `yearEnd` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -449,12 +442,6 @@
             "columnName": "yearEnd",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "imageResName",
-            "columnName": "imageResName",
-            "affinity": "TEXT",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -487,7 +474,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '669214fbbdf36ed7662b27cc6785fec4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cc3714b09c99156f44277f9fc0073e7b')"
     ]
   }
 }

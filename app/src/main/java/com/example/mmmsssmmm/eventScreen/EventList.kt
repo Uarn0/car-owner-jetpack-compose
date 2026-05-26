@@ -32,7 +32,7 @@ fun EventList(
     onAddEventClick: () -> Unit,
     onDeleteEventClick: (Long) -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
         if (events.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("Історія порожня. Створіть першу подію!")
@@ -40,7 +40,7 @@ fun EventList(
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize().padding(bottom = 80.dp),
-                contentPadding = PaddingValues(16.dp)
+                contentPadding = PaddingValues(16.dp),
             ) {
                 items(events, key = { it.globalEventId }) { event ->
                     Card(
@@ -54,7 +54,7 @@ fun EventList(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column {
-                                Text("Подія", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                                Text("Подія: ${event.name}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                                 Text("Одометр: ${event.odometer} км", style = MaterialTheme.typography.bodyMedium)
                                 Text(event.date.take(10), style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                             }

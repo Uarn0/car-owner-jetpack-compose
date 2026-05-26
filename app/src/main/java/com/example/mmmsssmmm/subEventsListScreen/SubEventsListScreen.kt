@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,7 +40,7 @@ fun SubEventsListScreen(
     onAddSubEventClick: () -> Unit,
     onDeleteSubEventClick: (VehicleHistoryItem) -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
 
         if (subEvents.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -177,7 +178,7 @@ fun FuelingCard(fueling: VehicleHistoryItem.Fueling, onDelete: () -> Unit) {
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Заправка ${if (fueling.isFullTank) "(Повний бак)" else ""}",
+                    text = "Заправка ${if (fueling.isFullTank == true) "(Повний бак)" else ""}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )

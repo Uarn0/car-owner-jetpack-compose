@@ -22,5 +22,4 @@ data class TripEntity(
     val startPoint: String,
     val endPoint: String,
     val distanceKM: Int,
-    val isBusiness: Boolean,
 )

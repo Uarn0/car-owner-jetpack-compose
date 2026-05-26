@@ -18,3 +18,12 @@ data class CtoStationCountTuple(
     val stationName: String,
     val visitCount: Int
 )
+
+data class CtoStationCountTotalTuple(
+    val serviceStation: String,
+    val total: Int
+)
+data class ComplexServiceStatTuple(
+    val serviceStation: String,
+    val totalCost: Double
+)

@@ -5,6 +5,7 @@ import com.example.mmmsssmmm.data.entity.EventEntity
 import com.example.mmmsssmmm.data.entity.FuelingEntity
 import com.example.mmmsssmmm.data.entity.ServiceEntity
 import com.example.mmmsssmmm.data.entity.TripEntity
+import com.example.mmmsssmmm.data.entity.VehiclesEntity
 import com.example.mmmsssmmm.data.toDomain
 import com.example.mmmsssmmm.data.tuples.CTOTuple
 import com.example.mmmsssmmm.data.tuples.MostTraveledVehicleTuple
@@ -16,6 +17,10 @@ import kotlin.collections.emptyList
 
 class EventRepository(private val db: AppDatabase) {
 
+    fun getCarsWithFueling(): Flow<List<VehiclesEntity>>{
+        return db.vehicleDao().getCarsWithFuelings()
+    }
+
     fun observeBaseEvents(vehicleId: Long): Flow<List<EventEntity>> {
         return db.eventDao().observeBaseEvents(vehicleId)
     }
@@ -23,16 +28,19 @@ class EventRepository(private val db: AppDatabase) {
 //    fun observeFuelCostHistory(): Flow<List<TotalCostForFuelTuple>>{
 //        return db.eventDao().getFuelCostsHistory()
 //    }
-    fun getFuelHistoryBetweenDates() = db.eventDao().getFuelHistoryBetweenDates()
+    fun getFuelHistoryBetweenDates(startPoint: String, endPoint: String) = db.eventDao().getFuelHistoryBetweenDates(startPoint, endPoint)
+    suspend fun getCarCapacity(carId: Long?) = db.eventDao().getCarCapacity(carId)
+    fun getFuelTypes() = db.fuelDao().getAllFuelTypes()
 
     fun getTotalCostByFuelType() = db.eventDao().getTotalCostByFuelType()
 
     fun getMostExpensiveFueling() = db.eventDao().getMostExpensiveFueling()
     //Паливо кінець
-    //Сто початок
     fun observeAllCTOStats(workTitle: String): Flow<List<CTOTuple>> {
         return db.eventDao().getCTOHistory(workTitle)
     }
+
+    suspend fun getCarId(eventId: Long) = db.eventDao().getCarId(eventId)
 
     fun getCtoCostsByCar() = db.eventDao().getCtoCostsByCar()
 
@@ -57,6 +65,7 @@ class EventRepository(private val db: AppDatabase) {
                 fullEvent?.toDomain() ?: emptyList()
             }
     }
+
     suspend fun insertBasicEvent(
         vehicleId: Long, name: String, date: String, odometer: Int, totalCost: Double
     ): Long {
@@ -69,12 +78,11 @@ class EventRepository(private val db: AppDatabase) {
     }
 
     suspend fun insertTripDetails(
-        eventId: Long, startPoint: String, endPoint: String, distanceKM: Int, isBusiness: Boolean
+        eventId: Long, startPoint: String, endPoint: String, distanceKM: Int
     ) {
         db.tripDao().insert(
             TripEntity(
-                eventId = eventId, startPoint = startPoint, endPoint = endPoint,
-                distanceKM = distanceKM, isBusiness = isBusiness
+                eventId = eventId, startPoint = startPoint, endPoint = endPoint, distanceKM = distanceKM
             )
         )
     }
@@ -90,7 +98,7 @@ class EventRepository(private val db: AppDatabase) {
     }
 
     suspend fun insertFuelingDetails(
-        eventId: Long, fuelTypeId: Int, volumeLiters: Double, pricePerLiter: Double, isFullTank: Boolean
+        eventId: Long, fuelTypeId: Int?, volumeLiters: Double, pricePerLiter: Double, isFullTank: Boolean
     ) {
         db.fuelDao().insert(
             FuelingEntity(
@@ -100,10 +108,17 @@ class EventRepository(private val db: AppDatabase) {
         )
     }
 
+    fun getExpensiveStations() = db.vehicleDao().getExpensiveStations()
+
     suspend fun deleteInId(id: Long) = db.eventDao().deleteById(id)
 
     suspend fun serviceDeleteInId(id: Long) = db.serviceDao().delete(id)
     suspend fun tripDeleteInId(id: Long) = db.tripDao().delete(id)
     suspend fun fuelDeleteInId(id: Long) = db.fuelDao().delete(id)
 
+    fun getTotalSpentByCar(id: Long) = db.eventDao().getTotalSpentByCar(id)
+    fun getCostPerKilometer(id: Long) = db.eventDao().getCostPerKilometer(id)
+    fun getCarsForDashboard() = db.eventDao().getCarsForDashboard()
+
+    fun getComplexServiceStat(fromDate: String, fromCost: Double) = db.eventDao().getComplexServiceStats(fromDate, fromCost)
 }

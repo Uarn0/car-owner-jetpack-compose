@@ -18,7 +18,6 @@ class VehicleRepository(private val db: AppDatabase) {
         manufactureYear: Int,
         tankCapacity: Double,
         plateNumber: String,
-        imageUri: String? = null
     ) {
         db.vehicleDao().insert(
             VehiclesEntity(
@@ -26,7 +25,6 @@ class VehicleRepository(private val db: AppDatabase) {
                 manufactureYear = manufactureYear,
                 tankCapacity = tankCapacity,
                 plateNumber = plateNumber,
-                userImageUri = imageUri
             )
         )
     }
@@ -40,4 +38,10 @@ class VehicleRepository(private val db: AppDatabase) {
     fun observeModels(brandId: Long): Flow<List<ModelDictEntity>> {
         return db.dictionaryDao().observeModels(brandId)
     }
+
+    fun observeJdmCars(): Flow<List<FullVehicleDetails>> = db.vehicleDao().observeJdmCars()
+
+    fun observeModernOrLargeCapacityCars(): Flow<List<FullVehicleDetails>> = db.vehicleDao().observeModernOrLargeCapacityCars()
+
+    fun observeCarsWithServiceHistory(): Flow<List<FullVehicleDetails>> = db.vehicleDao().observeCarsWithServiceHistory()
 }

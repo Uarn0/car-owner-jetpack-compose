@@ -4,8 +4,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.mmmsssmmm.data.dictionary.BrandDictEntity
-import com.example.mmmsssmmm.data.dictionary.BrandTypeDictEntity
 import com.example.mmmsssmmm.data.dictionary.ModelDictEntity
 
 @Entity(
@@ -24,6 +22,5 @@ data class VehiclesEntity(
     val modelId: Long,
     val manufactureYear: Int,
     val tankCapacity: Double,
-    val plateNumber: String,
-    val userImageUri: String? = null
+    val plateNumber: String
 )

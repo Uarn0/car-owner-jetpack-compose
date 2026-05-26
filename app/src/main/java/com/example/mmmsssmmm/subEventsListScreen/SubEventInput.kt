@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.mmmsssmmm.ui.events.SubEventViewModel
 
 @Composable
@@ -17,13 +18,14 @@ fun SubEventInput(
     vm: SubEventViewModel,
     onDismiss: () -> Unit
 ) {
-    val options = listOf("Trip", "Fueling", "Service")
+    val options = listOf("Поїздка", "Заправка", "СТО")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .systemBarsPadding()
     ) {
         Text(
             text = "Додати деталі",
@@ -44,7 +46,7 @@ fun SubEventInput(
         Spacer(Modifier.height(24.dp))
 
         when (options[selectedTabIndex]) {
-            "Trip" -> {
+            "Поїздка" -> {
                 OutlinedTextField(value = vm.startPoint, onValueChange = { vm.startPoint = it }, label = { Text("Звідки") }, modifier = Modifier.fillMaxWidth())
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(value = vm.endPoint, onValueChange = { vm.endPoint = it }, label = { Text("Куди") }, modifier = Modifier.fillMaxWidth())
@@ -58,7 +60,46 @@ fun SubEventInput(
                 )
             }
 
-            "Fueling" -> {
+            "Заправка" -> {
+                val fuelTypes by vm.fuelTypesList.collectAsStateWithLifecycle()
+                var expanded by remember { mutableStateOf(false) }
+
+                val selectedTypeName = fuelTypes.find { it.id == vm.selectedFuelTypeId }?.nameOfFuel ?: "Оберіть паливо"
+
+                @OptIn(ExperimentalMaterial3Api::class)
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = selectedTypeName,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Тип палива") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                        modifier = Modifier.menuAnchor().fillMaxWidth()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        fuelTypes.forEach { fuelEntity ->
+                            DropdownMenuItem(
+                                text = { Text(fuelEntity.nameOfFuel) },
+                                onClick = {
+                                    vm.updateFuelingData(newFuelTypeId = fuelEntity.id)
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
+
                 OutlinedTextField(
                     value = vm.volume,
                     onValueChange = { vm.updateFuelingData(newVol = it) },
@@ -67,6 +108,7 @@ fun SubEventInput(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
                 Spacer(Modifier.height(8.dp))
+
                 OutlinedTextField(
                     value = vm.pricePerLiter,
                     onValueChange = { vm.updateFuelingData(newPrice = it) },
@@ -76,7 +118,7 @@ fun SubEventInput(
                 )
             }
 
-            "Service" -> {
+            "СТО" -> {
                 OutlinedTextField(value = vm.workTitle, onValueChange = { vm.workTitle = it }, label = { Text("Опис робіт") }, modifier = Modifier.fillMaxWidth())
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(value = vm.stationName, onValueChange = { vm.stationName = it }, label = { Text("Назва СТО") }, modifier = Modifier.fillMaxWidth())
@@ -93,14 +135,14 @@ fun SubEventInput(
 
         Spacer(Modifier.height(24.dp))
 
-        if (options[selectedTabIndex] != "Service") {
-            Text(
-                text = "Розрахована вартість: ${vm.totalCost} ₴",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(Modifier.height(16.dp))
-        }
+//        if (options[selectedTabIndex] != "Service") {
+//            Text(
+//                text = "Розрахована вартість: ${vm.totalCost} ₴",
+//                style = MaterialTheme.typography.titleMedium,
+//                color = MaterialTheme.colorScheme.primary
+//            )
+//            Spacer(Modifier.height(16.dp))
+//        }
 
         Row(Modifier.fillMaxWidth()) {
             OutlinedButton(
@@ -115,9 +157,9 @@ fun SubEventInput(
             Button(
                 onClick = {
                     when (options[selectedTabIndex]) {
-                        "Trip" -> vm.addTrip(isBus = false)
-                        "Fueling" -> vm.addFueling(fuelId = 1, isFull = true)
-                        "Service" -> vm.addService()
+                        "Поїздка" -> vm.addTrip()
+                        "Заправка" -> vm.addFueling(fuelId = vm.selectedFuelTypeId)
+                        "СТО" -> vm.addService()
                     }
                     onDismiss()
                 },

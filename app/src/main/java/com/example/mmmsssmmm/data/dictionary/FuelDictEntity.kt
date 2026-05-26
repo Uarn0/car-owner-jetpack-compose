@@ -8,6 +8,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity(tableName = "fuel_types")
 data class FuelDictEntity(
-    @PrimaryKey(autoGenerate = false) val id: Long,
+    @PrimaryKey(autoGenerate = false) val id: Int,
     @SerialName("name") val nameOfFuel: String
 )

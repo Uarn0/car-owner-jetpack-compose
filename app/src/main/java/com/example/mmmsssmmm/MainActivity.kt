@@ -6,8 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -41,14 +45,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         Graph.init(applicationContext)
         setContent {
-            Main()
+            Main(Modifier.padding(top = 20.dp).systemBarsPadding())
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Main() {
+fun Main(systemBarsPadding: Modifier) {
 
     val navController = rememberNavController()
 
@@ -60,13 +64,16 @@ fun Main() {
             )
             val vehicles = vm.vehicles.collectAsStateWithLifecycle().value
 
+            val currentFilter = vm.currentFilter.collectAsStateWithLifecycle().value
 
             MainList(
                 vehicles = vehicles,
-                onDetailsClick = { id -> navController.navigate("EventList/$id")},
+                onDetailsClick = { id -> navController.navigate("EventList/$id") },
                 onAddClick = { navController.navigate("AddVehicle") },
                 onDelete = vm::delete,
-                onStatsClick = { navController.navigate("StatsSubEvent") }
+                onStatsClick = { navController.navigate("StatsSubEvent") },
+                currentFilter = currentFilter,
+                onFilterSelected = { newFilter -> vm.setFilter(newFilter) }
             )
         }
 
@@ -82,8 +89,8 @@ fun Main() {
                 onBrandSelected = { brandId ->
                     vm.loadModelsForBrand(brandId)
                 },
-                onSave = { modelId, year, tank, plate, imageUri ->
-                    vm.add(modelId, year, tank, plate, imageUri)
+                onSave = { modelId, year, tank, plate ->
+                    vm.add(modelId, year, tank, plate)
                     navController.popBackStack()
                 }
             )
@@ -166,7 +173,9 @@ fun Main() {
         }
         composable(
             route = "AddSubEvent/{eventId}",
-            arguments = listOf(navArgument("eventId") { type = NavType.LongType })
+            arguments = listOf(
+                navArgument("eventId") { type = NavType.LongType },
+            )
         ) {
             val vm: SubEventViewModel = viewModel(factory = EventsVMFactory(eventRepo))
 

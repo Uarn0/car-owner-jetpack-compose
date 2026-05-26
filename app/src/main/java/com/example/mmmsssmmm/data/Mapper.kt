@@ -52,7 +52,6 @@ fun FullEventDetails.toDomain(): List<VehicleHistoryItem> {
                 startPoint = this.trip.startPoint,
                 endPoint = this.trip.endPoint,
                 distanceKM = this.trip.distanceKM,
-                isBusiness = this.trip.isBusiness
             )
         )
     }

@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
 data class FuelingEntity(
     @PrimaryKey val eventId: Long,
     val volumeLiters: Double,
-    val fuelTypeId: Int,
+    val fuelTypeId: Int?,
     val pricePerLiter: Double,
-    val isFullTank: Boolean,
+    val isFullTank: Boolean?,
 )

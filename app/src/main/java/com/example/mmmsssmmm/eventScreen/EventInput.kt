@@ -22,18 +22,28 @@ import java.time.format.DateTimeFormatter
 fun EventInput(
     vm: EventsViewModel,
     onCancel: () -> Unit,
-    onEventCreated: (Long) -> Unit
+    onEventCreated: (Long) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .systemBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Новий запис",
             style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = vm.name,
+            onValueChange = { vm.name = it },
+            label = { Text("Введіть назву для цієї події") },
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(Modifier.height(8.dp))
@@ -60,7 +70,9 @@ fun EventInput(
         Row(Modifier.fillMaxWidth()) {
             OutlinedButton(
                 onClick = onCancel,
-                modifier = Modifier.weight(1f).height(56.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp)
             ) {
                 Text("Скасувати")
             }
@@ -71,9 +83,9 @@ fun EventInput(
                 onClick = {
                     val time = whatTime()
                     val odo = vm.odometer.toIntOrNull() ?: 0
-
+                    val n = vm.name
                     vm.createBaseEvent(
-                        name = "Подія",
+                        name = n,
                         date = time,
                         odometer = odo,
                         totalCost = 0.0,
@@ -82,7 +94,9 @@ fun EventInput(
                         }
                     )
                 },
-                modifier = Modifier.weight(1f).height(56.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp),
                 enabled = vm.odometer.isNotBlank()
             ) {
                 Icon(Icons.Default.Add, contentDescription = null)

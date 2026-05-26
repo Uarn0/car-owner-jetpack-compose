@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -28,7 +29,7 @@ fun MainInput(
     brands: List<BrandDictEntity>,
     models: List<ModelDictEntity>,
     onBrandSelected: (Long) -> Unit,
-    onSave: (modelId: Long, year: Int, tank: Double, plate: String, imageUri: String?) -> Unit
+    onSave: (modelId: Long, year: Int, tank: Double, plate: String) -> Unit,
 ) {
     var selectedBrand by remember { mutableStateOf<BrandDictEntity?>(null) }
     var selectedModel by remember { mutableStateOf<ModelDictEntity?>(null) }
@@ -41,46 +42,14 @@ fun MainInput(
     var tankCapacity by remember { mutableStateOf("") }
     var plateNumber by remember { mutableStateOf("") }
 
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
-    val photoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        imageUri = uri
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .systemBarsPadding(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Button(
-            onClick = {
-                photoPickerLauncher.launch(
-                    androidx.activity.result.PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(120.dp),
-            shape = MaterialTheme.shapes.medium
-        ) {
-            if (imageUri != null) {
-                AsyncImage(
-                    model = imageUri,
-                    contentDescription = "Selected Image",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(Icons.Default.Image, contentDescription = null, modifier = Modifier.size(40.dp))
-                    Text("Додати фото машини")
-                }
-            }
-        }
-
 
         ExposedDropdownMenuBox(
             expanded = brandExpanded,
@@ -174,11 +143,12 @@ fun MainInput(
                 )
 
                 val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-                val endYear = if (selectedModel!!.yearEnd >= selectedModel!!.yearStart && selectedModel!!.yearEnd <= currentYear) {
-                    selectedModel!!.yearEnd
-                } else {
-                    currentYear
-                }
+                val endYear =
+                    if (selectedModel!!.yearEnd >= selectedModel!!.yearStart && selectedModel!!.yearEnd <= currentYear) {
+                        selectedModel!!.yearEnd
+                    } else {
+                        currentYear
+                    }
 
                 val availableYears = (selectedModel!!.yearStart..endYear).toList().reversed()
 
@@ -223,12 +193,13 @@ fun MainInput(
                         selectedModel!!.id,
                         year.toIntOrNull() ?: 0,
                         tankCapacity.toDoubleOrNull() ?: 0.0,
-                        plateNumber.trim(),
-                        imageUri?.toString()
+                        plateNumber.trim()
                     )
                 }
             },
-            modifier = Modifier.fillMaxWidth().height(56.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
             enabled = selectedModel != null && year.isNotBlank()
         ) {
             Icon(Icons.Default.Check, contentDescription = "Add")

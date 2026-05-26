@@ -18,5 +18,4 @@ data class ModelDictEntity(
     val name: String,
     val yearStart: Int,
     val yearEnd: Int,
-    val imageResName: String
 )

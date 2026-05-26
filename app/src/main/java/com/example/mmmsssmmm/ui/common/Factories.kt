@@ -26,7 +26,6 @@ class EventsVMFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         val savedStateHandle = extras.createSavedStateHandle()
-
         return when {
             modelClass.isAssignableFrom(EventsViewModel::class.java) -> {
                 EventsViewModel(repo, savedStateHandle) as T
