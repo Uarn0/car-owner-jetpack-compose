@@ -135,14 +135,6 @@ fun SubEventInput(
 
         Spacer(Modifier.height(24.dp))
 
-//        if (options[selectedTabIndex] != "Service") {
-//            Text(
-//                text = "Розрахована вартість: ${vm.totalCost} ₴",
-//                style = MaterialTheme.typography.titleMedium,
-//                color = MaterialTheme.colorScheme.primary
-//            )
-//            Spacer(Modifier.height(16.dp))
-//        }
 
         Row(Modifier.fillMaxWidth()) {
             OutlinedButton(

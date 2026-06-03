@@ -144,24 +144,6 @@ interface EventDAO {
     )
     fun getCtoCostsByCar(): Flow<List<CtoCostByCarTuple>>
 
-//    @Query(
-//        """
-//        SELECT
-//            v.plateNumber AS plateNumber,
-//            m.name AS carName,
-//            e.date AS date,
-//            s.serviceStation AS station,
-//            s.workTitle AS whatWork,
-//            s.serviceCost AS cost
-//        FROM events e
-//        INNER JOIN vehicles v ON e.vehicleId = v.globalVehicleId
-//        INNER JOIN models m ON v.modelId = m.id
-//        INNER JOIN service s ON e.globalEventId = s.eventId
-//        WHERE s.serviceCost = (SELECT MAX(serviceCost) FROM service)
-//    """
-//    )
-//    fun getMostExpensiveService(): Flow<List<CTOTuple>>
-
     @Query(
         """
         SELECT 
@@ -276,6 +258,26 @@ interface EventDAO {
 
     @Query("UPDATE events SET odometer = :odo WHERE globalEventId = :id")
     suspend fun updateOdometer(id: Long, odo: Int)
+
+    @Query(
+        """
+        SELECT 
+            v.plateNumber AS plateNumber,
+            m.name AS carName, 
+            e.date AS date, 
+            ft.nameOfFuel AS fuelType,  
+            (f.volumeLiters * f.pricePerLiter) AS totalCost
+        FROM events e
+        inner join fuel_types ft on f.fuelTypeId = ft.id
+        INNER JOIN vehicles v ON e.vehicleId = v.globalVehicleId
+        INNER JOIN models m ON v.modelId = m.id
+        INNER JOIN fueling f ON e.globalEventId = f.eventId
+        WHERE (f.volumeLiters * f.pricePerLiter) = (
+            SELECT MIN(volumeLiters * pricePerLiter) FROM fueling
+        )
+    """
+    )
+    fun getCheapestFueling(): Flow<List<TotalCostForFuelTuple>>
 
     @Query(
         """

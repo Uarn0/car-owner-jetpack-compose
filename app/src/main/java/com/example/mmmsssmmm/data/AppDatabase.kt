@@ -61,10 +61,14 @@ abstract class AppDatabase: RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "garage_v19.db"
+                    "garage_v20.db"
                 )
                     .fallbackToDestructiveMigration()
-                    .addCallback(DatabaseCallback(context, databaseScope))
+                    .addCallback(
+                        DatabaseCallback(context, databaseScope) {
+                            getInstance(context)
+                        }
+                    )
                     .build()
 
                 INSTANCE = instance
@@ -73,39 +77,3 @@ abstract class AppDatabase: RoomDatabase() {
         }
     }
 }
-
-//   <!______MIGRATION______!)
-
-//@Database(
-//    entities = [VehiclesEntity::class, EventEntity::class, ServiceEntity::class, TripEntity::class, FuelingEntity::class],
-//    version = 3,
-//    autoMigrations = [
-//        AutoMigration(
-//            from = 2,
-//            to = 3,
-//            spec = AppDatabase2.MyAutoMigration::class
-//        )
-//    ],
-//    exportSchema = true,
-//)
-//abstract class AppDatabase2: RoomDatabase() {
-//    class MyAutoMigration : AutoMigrationSpec
-//
-//    abstract fun vehicleDao(): VehiclesDAO
-//    abstract fun eventDao(): EventDAO
-//
-//    @Volatile
-//    private var INSTANCE2: AppDatabase2? = null
-//
-//    fun getInstance(context: Context): AppDatabase2{
-//        return INSTANCE2 ?: synchronized(this){
-//            val instance = Room.databaseBuilder(
-//                context.applicationContext,
-//                AppDatabase2::class.java,
-//                "garage.db"
-//            ).fallbackToDestructiveMigration().build()
-//            INSTANCE2 = instance
-//            instance
-//        }
-//    }
-//}

@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 
 class VehicleRepository(private val db: AppDatabase) {
 
+    fun observeCarsWithFullTankFilter(): Flow<List<FullVehicleDetails>> = db.vehicleDao().observeCarsWithFullTankFilter()
+
     fun observeAllVehiclesFull(): Flow<List<FullVehicleDetails>> {
         return db.vehicleDao().observeAllVehiclesFull()
     }

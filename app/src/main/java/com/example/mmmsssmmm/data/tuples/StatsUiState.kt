@@ -3,7 +3,7 @@ package com.example.mmmsssmmm.data.tuples
 import com.example.mmmsssmmm.data.entity.VehiclesEntity
 
 enum class StatsTab { FUEL, CTO, DISTANCE }
-enum class FuelSubTab { ALL, BY_TYPE, MOST_EXPENSIVE }
+enum class FuelSubTab { ALL, BY_TYPE, MOST_EXPENSIVE, CHEAPEST }
 enum class CtoSubTab { SEARCH, BY_CAR, TOP_STATIONS, COMPLEX }
 enum class DistanceSubTab { ALL_TRIPS, ROUTES }
 
@@ -12,6 +12,8 @@ data class StatsUiState(
     val activeFuelSubTab: FuelSubTab = FuelSubTab.ALL,
     val activeCtoSubTab: CtoSubTab = CtoSubTab.SEARCH,
     val activeDistanceSubTab: DistanceSubTab = DistanceSubTab.ALL_TRIPS,
+    val isFullTankFilterActive: Boolean = false,
+    val fuelCheapest: List<TotalCostForFuelTuple> = emptyList(),
 
     val ctoSearchQuery: String = "",
 

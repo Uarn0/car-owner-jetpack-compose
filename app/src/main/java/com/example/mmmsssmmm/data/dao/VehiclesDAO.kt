@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.example.mmmsssmmm.data.entity.VehiclesEntity
 import com.example.mmmsssmmm.data.fulldetails.FullVehicleDetails
+import com.example.mmmsssmmm.data.tuples.CarDropdownTuple
 import com.example.mmmsssmmm.data.tuples.CtoStationCountTotalTuple
 import kotlinx.coroutines.flow.Flow
 
@@ -91,6 +92,24 @@ interface VehiclesDAO {
         )
     """)
     fun observeCarsWithServiceHistory(): Flow<List<FullVehicleDetails>>
+
+    @Transaction
+    @Query(
+        """
+        SELECT v.*, b.brandName AS brandName, m.name AS modelName, t.typeName AS typeName
+        FROM vehicles v
+        INNER JOIN models m ON v.modelId = m.id
+        INNER JOIN brands b ON m.brandId = b.id
+        INNER JOIN body_types t ON m.bodyTypeId = t.id
+        INNER JOIN (
+            SELECT DISTINCT e.vehicleId 
+            FROM events e 
+            INNER JOIN fueling f ON e.globalEventId = f.eventId 
+            WHERE f.isFullTank = 1
+        ) full_tank_cars ON v.globalVehicleId = full_tank_cars.vehicleId
+    """
+    )
+    fun observeCarsWithFullTankFilter(): Flow<List<FullVehicleDetails>>
 }
 
 

@@ -8,6 +8,7 @@ import com.example.mmmsssmmm.data.entity.TripEntity
 import com.example.mmmsssmmm.data.entity.VehiclesEntity
 import com.example.mmmsssmmm.data.toDomain
 import com.example.mmmsssmmm.data.tuples.CTOTuple
+import com.example.mmmsssmmm.data.tuples.CarDropdownTuple
 import com.example.mmmsssmmm.data.tuples.MostTraveledVehicleTuple
 import com.example.mmmsssmmm.data.tuples.TotalCostForFuelTuple
 import com.example.mmmsssmmm.domain.item.VehicleHistoryItem
@@ -24,10 +25,7 @@ class EventRepository(private val db: AppDatabase) {
     fun observeBaseEvents(vehicleId: Long): Flow<List<EventEntity>> {
         return db.eventDao().observeBaseEvents(vehicleId)
     }
-    //Паливо початок
-//    fun observeFuelCostHistory(): Flow<List<TotalCostForFuelTuple>>{
-//        return db.eventDao().getFuelCostsHistory()
-//    }
+
     fun getFuelHistoryBetweenDates(startPoint: String, endPoint: String) = db.eventDao().getFuelHistoryBetweenDates(startPoint, endPoint)
     suspend fun getCarCapacity(carId: Long?) = db.eventDao().getCarCapacity(carId)
     fun getFuelTypes() = db.fuelDao().getAllFuelTypes()
@@ -35,7 +33,7 @@ class EventRepository(private val db: AppDatabase) {
     fun getTotalCostByFuelType() = db.eventDao().getTotalCostByFuelType()
 
     fun getMostExpensiveFueling() = db.eventDao().getMostExpensiveFueling()
-    //Паливо кінець
+
     fun observeAllCTOStats(workTitle: String): Flow<List<CTOTuple>> {
         return db.eventDao().getCTOHistory(workTitle)
     }
@@ -45,18 +43,13 @@ class EventRepository(private val db: AppDatabase) {
     fun getCtoCostsByCar() = db.eventDao().getCtoCostsByCar()
 
     fun getPopularStations() = db.eventDao().getPopularStations()
-    //Сто кінець
+
     fun observeDistanceStats() =db.eventDao().getLongestTripsHistory()
     fun getPopularRoutes() = db.eventDao().getPopularRoutes()
     suspend fun addToEventStats(eventId: Long, cost: Double, odometer: Int) {
         db.eventDao().incrementEventStats(eventId, cost, odometer)
     }
 
-    //    fun observeEvents(vehicleId: Long): Flow<List<VehicleHistoryItem>> {
-//        return db.eventDao()
-//            .observeFullEvents(vehicleId)
-//            .map { list -> list.map { fullEvent -> fullEvent.toDomain() } }
-//    }
 
     fun observeSingleSubEvent(eventId: Long): Flow<List<VehicleHistoryItem>> {
         return db.eventDao()
@@ -65,6 +58,8 @@ class EventRepository(private val db: AppDatabase) {
                 fullEvent?.toDomain() ?: emptyList()
             }
     }
+
+    fun getCheapestFueling(): Flow<List<TotalCostForFuelTuple>> = db.eventDao().getCheapestFueling()
 
     suspend fun insertBasicEvent(
         vehicleId: Long, name: String, date: String, odometer: Int, totalCost: Double
@@ -86,6 +81,7 @@ class EventRepository(private val db: AppDatabase) {
             )
         )
     }
+
 
     suspend fun insertServiceDetails(
         eventId: Long, workTitle: String, serviceStation: String, serviceCost: Double

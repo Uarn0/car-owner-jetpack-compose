@@ -30,7 +30,12 @@ class StatsViewModel(private val repo: EventRepository) : ViewModel() {
         repo.observeAllCTOStats(query)
     }
 
-    private data class FuelData(val all: List<TotalCostForFuelTuple>, val byType: List<FuelTypeCostTuple>, val max: List<TotalCostForFuelTuple>)
+    private data class FuelData (
+        val all: List<TotalCostForFuelTuple>,
+        val byType: List<FuelTypeCostTuple>,
+        val max: List<TotalCostForFuelTuple>,
+        val min: List<TotalCostForFuelTuple>
+    )
     @OptIn(ExperimentalCoroutinesApi::class)
     private val fuelStatsFlow = combine(
         _filterStartDate,
@@ -44,11 +49,13 @@ class StatsViewModel(private val repo: EventRepository) : ViewModel() {
         combine(
             repo.getFuelHistoryBetweenDates(startStr, endStr),
             repo.getTotalCostByFuelType(),
-            repo.getMostExpensiveFueling()
-        ) { all, byType, max ->
-            FuelData(all, byType, max)
+            repo.getMostExpensiveFueling(),
+            repo.getCheapestFueling(),
+        ) { all, byType, max, min ->
+            FuelData(all, byType, max, min)
         }
     }
+
     val carsWithFuelingsFlow = repo.getCarsWithFueling()
 
     val expensiveStationsFlow = repo.getExpensiveStations()
@@ -134,7 +141,7 @@ class StatsViewModel(private val repo: EventRepository) : ViewModel() {
             ctoStats = ctoSearch,
             ctoCostsByCar = ctoAnalytics.costs,
             ctoPopularStations = ctoAnalytics.stations,
-
+            fuelCheapest = fuel.min,
             expensiveStations = expStations,
 
             distanceStats = distance.all,

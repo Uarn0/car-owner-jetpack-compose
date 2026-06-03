@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-enum class CarFilter { ALL, JDM, MODERN_OR_LARGE, WITH_SERVICE }
+enum class CarFilter { ALL, JDM, MODERN_OR_LARGE, WITH_SERVICE, WITH_FULL_TANK }
+
 class VehiclesViewModel(private val repo: VehicleRepository) : ViewModel() {
 
     private val _currentFilter = MutableStateFlow(CarFilter.ALL)
@@ -25,13 +26,13 @@ class VehiclesViewModel(private val repo: VehicleRepository) : ViewModel() {
             CarFilter.JDM -> repo.observeJdmCars()
             CarFilter.MODERN_OR_LARGE -> repo.observeModernOrLargeCapacityCars()
             CarFilter.WITH_SERVICE -> repo.observeCarsWithServiceHistory()
+            CarFilter.WITH_FULL_TANK -> repo.observeCarsWithFullTankFilter()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun setFilter(filter: CarFilter) {
         _currentFilter.value = filter
     }
-
 
     val brands = repo.observeBrands()
 

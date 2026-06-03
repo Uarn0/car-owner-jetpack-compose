@@ -25,8 +25,8 @@ import com.example.mmmsssmmm.ui.vehicles.CarFilter
 @Composable
 fun MainList(
     vehicles: List<FullVehicleDetails>,
-    currentFilter: CarFilter, // ДОДАНО
-    onFilterSelected: (CarFilter) -> Unit, // ДОДАНО
+    currentFilter: CarFilter,
+    onFilterSelected: (CarFilter) -> Unit,
     onDetailsClick: (Long) -> Unit,
     onAddClick: () -> Unit,
     onDelete: (Long) -> Unit,

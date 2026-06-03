@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -74,17 +76,17 @@ fun StatsScreen(vm: StatsViewModel) {
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Button(
+            Button(shape = RoundedCornerShape(5),
                 onClick = { vm.setTab(StatsTab.FUEL) },
                 colors = ButtonDefaults.buttonColors(containerColor = if (state.activeTab == StatsTab.FUEL) MaterialTheme.colorScheme.primary else Color.LightGray)
             ) { Text("Заправка") }
 
-            Button(
+            Button(shape = RoundedCornerShape(5),
                 onClick = { vm.setTab(StatsTab.CTO) },
                 colors = ButtonDefaults.buttonColors(containerColor = if (state.activeTab == StatsTab.CTO) MaterialTheme.colorScheme.primary else Color.LightGray)
             ) { Text("СТО") }
 
-            Button(
+            Button(shape = RoundedCornerShape(5),
                 onClick = { vm.setTab(StatsTab.DISTANCE) },
                 colors = ButtonDefaults.buttonColors(containerColor = if (state.activeTab == StatsTab.DISTANCE) MaterialTheme.colorScheme.primary else Color.LightGray)
             ) { Text("Поїздка") }
@@ -102,7 +104,6 @@ fun StatsScreen(vm: StatsViewModel) {
                 var showExistsQuery by remember { mutableStateOf(false) }
 
                 val carsWithFuelings by vm.carsWithFuelingsFlow.collectAsState(initial = emptyList())
-//                val carsWithCTO by vm.expensiveStationsFlow.collectAsState(initial = emptyList())
 
                 val displayCars = when (state.activeTab) {
                     StatsTab.FUEL -> {
@@ -164,32 +165,6 @@ fun StatsScreen(vm: StatsViewModel) {
 
                         }
                     }
-//                    } else if (state.activeTab == StatsTab.CTO) {
-//                        Button(
-//                            onClick = { showExpensiveStations = !showExpensiveStations },
-//                            modifier = Modifier.fillMaxWidth()
-//                        ) {
-//                            Text(if (showExpensiveStations) "Приховати аналітику СТО" else "ТОП дорогих СТО (>10к ₴)")
-//                        }
-//
-//                        if (showExpensiveStations && carsWithCTO.isNotEmpty()) {
-//                            Column(modifier = Modifier.padding(top = 8.dp)) {
-//                                carsWithCTO.forEach { station ->
-//                                    Row(
-//                                        modifier = Modifier.fillMaxWidth(),
-//                                        horizontalArrangement = Arrangement.SpaceBetween
-//                                    ) {
-//                                        Text("СТО: ${station.serviceStation}")
-//                                        Text(
-//                                            "${station.total} ₴",
-//                                            color = Color.Red,
-//                                            fontWeight = Bold
-//                                        )
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
                 }
 
                 Row(
@@ -254,23 +229,29 @@ fun StatsScreen(vm: StatsViewModel) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState())
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        OutlinedButton(
+                        OutlinedButton(shape = RoundedCornerShape(5),
                             onClick = { vm.setFuelSubTab(FuelSubTab.ALL) },
                             colors = ButtonDefaults.outlinedButtonColors(containerColor = if (state.activeFuelSubTab == FuelSubTab.ALL) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
-                        ) { Text("Всі") }
+                        ) { Text("Всі", maxLines = 1) }
 
-                        OutlinedButton(
+                        OutlinedButton(shape = RoundedCornerShape(5),
                             onClick = { vm.setFuelSubTab(FuelSubTab.BY_TYPE) },
                             colors = ButtonDefaults.outlinedButtonColors(containerColor = if (state.activeFuelSubTab == FuelSubTab.BY_TYPE) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
-                        ) { Text("По типу") }
+                        ) { Text("По типу", maxLines = 1) }
 
-                        OutlinedButton(
+                        OutlinedButton(shape = RoundedCornerShape(5),
                             onClick = { vm.setFuelSubTab(FuelSubTab.MOST_EXPENSIVE) },
                             colors = ButtonDefaults.outlinedButtonColors(containerColor = if (state.activeFuelSubTab == FuelSubTab.MOST_EXPENSIVE) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
-                        ) { Text("Найдорожча") }
+                        ) { Text("Найдорожча", maxLines = 1) }
+
+                        OutlinedButton(shape = RoundedCornerShape(5),
+                            onClick = { vm.setFuelSubTab(FuelSubTab.CHEAPEST) },
+                            colors = ButtonDefaults.outlinedButtonColors(containerColor = if (state.activeFuelSubTab == FuelSubTab.CHEAPEST) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
+                        ) { Text("Найдешевша", maxLines = 1) }
                     }
 
                     when (state.activeFuelSubTab) {
@@ -317,6 +298,8 @@ fun StatsScreen(vm: StatsViewModel) {
                         }
 
                         FuelSubTab.MOST_EXPENSIVE -> FuelStatsList(state.fuelMostExpensive)
+
+                        FuelSubTab.CHEAPEST -> FuelStatsList(state.fuelCheapest)
                     }
                 }
 
@@ -331,21 +314,22 @@ fun StatsScreen(vm: StatsViewModel) {
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             OutlinedButton(
+                                shape = RoundedCornerShape(5),
                                 onClick = { vm.setCtoSubTab(CtoSubTab.SEARCH) },
                                 colors = ButtonDefaults.outlinedButtonColors(containerColor = if (state.activeCtoSubTab == CtoSubTab.SEARCH) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
                             ) { Text("Пошук") }
 
-                            OutlinedButton(
+                            OutlinedButton(shape = RoundedCornerShape(5),
                                 onClick = { vm.setCtoSubTab(CtoSubTab.BY_CAR) },
                                 colors = ButtonDefaults.outlinedButtonColors(containerColor = if (state.activeCtoSubTab == CtoSubTab.BY_CAR) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
                             ) { Text("Витрати авто") }
 
-                            OutlinedButton(
+                            OutlinedButton(shape = RoundedCornerShape(5),
                                 onClick = { vm.setCtoSubTab(CtoSubTab.TOP_STATIONS) },
                                 colors = ButtonDefaults.outlinedButtonColors(containerColor = if (state.activeCtoSubTab == CtoSubTab.TOP_STATIONS) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
                             ) { Text("Топ СТО") }
 
-                            OutlinedButton(
+                            OutlinedButton(shape = RoundedCornerShape(5),
                                 onClick = { vm.setCtoSubTab(CtoSubTab.COMPLEX) },
                                 colors = ButtonDefaults.outlinedButtonColors(containerColor = if (state.activeCtoSubTab == CtoSubTab.COMPLEX) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
                             ) { Text("Звіт") }
@@ -555,12 +539,12 @@ fun StatsScreen(vm: StatsViewModel) {
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            OutlinedButton(
+                            OutlinedButton(shape = RoundedCornerShape(5),
                                 onClick = { vm.setDistanceSubTab(DistanceSubTab.ALL_TRIPS) },
                                 colors = ButtonDefaults.outlinedButtonColors(containerColor = if (state.activeDistanceSubTab == DistanceSubTab.ALL_TRIPS) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
                             ) { Text("Всі") }
 
-                            OutlinedButton(
+                            OutlinedButton(shape = RoundedCornerShape(5),
                                 onClick = { vm.setDistanceSubTab(DistanceSubTab.ROUTES) },
                                 colors = ButtonDefaults.outlinedButtonColors(containerColor = if (state.activeDistanceSubTab == DistanceSubTab.ROUTES) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
                             ) { Text("Топ маршрути") }
@@ -626,7 +610,7 @@ fun StatsScreen(vm: StatsViewModel) {
 
 @Composable
 fun CtoStatsList(ctoStats: List<CTOTuple>) {
-    LazyColumn(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
+    LazyColumn(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp).systemBarsPadding()) {
         items(ctoStats) { cto ->
             CTOStatsCard(
                 cto.date,
